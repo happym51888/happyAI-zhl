@@ -1,0 +1,560 @@
+---
+import './CanvasHome.css';
+
+const sidebarItems = [
+	{ icon: '◆', label: '入口说明', view: 'tips', target: 'tip-start' },
+	{ icon: '⌁', label: '使用方式', view: 'tips', target: 'tip-usage' },
+	{ icon: '✦', label: '学习原则', view: 'tips', target: 'tip-principles' },
+	{ icon: '▣', label: '最近更新', view: 'tips', target: 'tip-update' },
+	{ icon: '●', label: '个人信息', view: 'system', target: 'identity' },
+	{ icon: '│', label: '时间线', view: 'system', target: 'timeline' },
+	{ icon: '◇', label: '核心故事', view: 'system', target: 'story' },
+	{ icon: '⌘', label: '技能标签', view: 'system', target: 'skills' },
+	{ icon: '▤', label: '现在', view: 'system', target: 'now' },
+	{ icon: '✺', label: 'AI 搭档', view: 'system', target: 'partner' },
+	{ icon: '■', label: '作品档案', view: 'works', target: 'work-knowledge' },
+];
+
+const works = [
+	{
+		id: 'work-knowledge',
+		number: '01',
+		type: 'KNOWLEDGE',
+		title: 'HappyAI 知识库',
+		description: '把 LLM、RAG、Agent 与工程实践连接成持续生长的学习系统。',
+		href: '/notes/',
+		cta: '打开知识库',
+		x: 150,
+		y: 120,
+		tone: 'yellow',
+	},
+	{
+		id: 'work-map',
+		number: '02',
+		type: 'INTERACTIVE',
+		title: 'AI Agent 全景图',
+		description: '用一张可以探索的关系图理解模型、知识、工具、控制和治理。',
+		href: '/projects/ai-agent-whole-picture/',
+		cta: '探索全景图',
+		x: 590,
+		y: 80,
+		tone: 'blue',
+	},
+	{
+		id: 'work-learning',
+		number: '03',
+		type: 'ROADMAP',
+		title: 'AI 学习路线',
+		description: '从 Python 与 LLM 基础，一步步走到可靠的 Agent 系统。',
+		href: '/learning-path/',
+		cta: '查看路线',
+		x: 1040,
+		y: 190,
+		tone: 'pink',
+	},
+	{
+		id: 'work-os',
+		number: '04',
+		type: 'BUILDING',
+		title: 'Happy Personal OS',
+		description: '管理学习、项目、知识与 AI 协作方式的个人操作系统。',
+		href: '#',
+		cta: '持续构建中',
+		x: 410,
+		y: 520,
+		tone: 'green',
+	},
+	{
+		id: 'work-next',
+		number: '05',
+		type: 'PLACEHOLDER',
+		title: '下一个真实作品',
+		description: '这里将放入你的项目图片、案例说明、过程记录和最终成果。',
+		href: '#',
+		cta: '等待内容',
+		x: 910,
+		y: 570,
+		tone: 'violet',
+	},
+];
+---
+
+<div class="spatial-app" id="spatialApp" data-active-view="tips">
+	<header class="spatial-topbar">
+		<a class="canvas-brand" href="/" aria-label="Happy Canvas 首页">
+			<span>H</span>
+			<strong>HAPPY Canvas</strong>
+		</a>
+		<div class="canvas-hint" aria-hidden="true">
+			<span>Scroll 滚动</span>
+			<i>·</i>
+			<span>Drag 移动画布</span>
+			<i>·</i>
+			<span>双击 聚焦</span>
+			<b>⌘</b>
+		</div>
+		<div class="canvas-top-actions">
+			<a href="/notes/">知识库</a>
+			<span id="canvasClock">--:--</span>
+			<button id="canvasHelp" type="button" aria-label="查看操作帮助">?</button>
+		</div>
+	</header>
+
+	<aside class="canvas-sidebar" aria-label="画布目录">
+		<nav>
+			{
+				sidebarItems.map((item) => (
+					<button
+						type="button"
+						data-view-target={item.view}
+						data-focus-target={item.target}
+					>
+						<span>{item.icon}</span>
+						<b>{item.label}</b>
+					</button>
+				))
+			}
+		</nav>
+		<button class="canvas-add" type="button" id="canvasAdd">
+			<span>＋</span>
+			新建
+		</button>
+		<button class="canvas-minimap" id="canvasMinimap" type="button" aria-label="重置画布视图">
+			<span>Minimap</span>
+			<div>
+				<i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+				<b id="minimapViewport"></b>
+			</div>
+		</button>
+	</aside>
+
+	<main class="canvas-stage" id="canvasStage" aria-live="polite">
+		<div class="spatial-canvas" id="spatialCanvas">
+			<section class="canvas-scene tips-scene" data-scene="tips" aria-label="使用提示画布">
+				<svg class="scene-lines" viewBox="0 0 1600 900" aria-hidden="true">
+					<path d="M 395 218 C 520 218, 540 155, 665 155" />
+					<path d="M 395 218 C 520 218, 535 430, 680 430" />
+					<path d="M 930 190 C 1070 190, 1080 305, 1210 305" />
+					<path d="M 925 465 C 1080 465, 1100 650, 1260 650" />
+					<path d="M 450 650 C 600 650, 600 510, 735 510" />
+				</svg>
+
+				<article class="canvas-node welcome-node" id="tip-start">
+					<span class="node-stripe"></span>
+					<p>WELCOME / 001</p>
+					<h1>欢迎来到<br />Happy 的 AI 世界</h1>
+					<small>这是一个可以拖动、缩放和持续生长的空间画布。</small>
+					<button type="button" data-view-target="system">从“我的 OS”认识我 →</button>
+				</article>
+
+				<article class="canvas-node note-node note-yellow" id="tip-usage">
+					<p>HOW TO USE</p>
+					<h2>先随便逛逛</h2>
+					<ul>
+						<li>拖动画布探索空间</li>
+						<li>滚轮移动，＋／－缩放</li>
+						<li>底部三个 Tab 切换世界</li>
+					</ul>
+				</article>
+
+				<article class="canvas-node principle-node" id="tip-principles">
+					<span>✦</span>
+					<div>
+						<p>LEARNING PRINCIPLE</p>
+						<h2>理解，而不是收藏。</h2>
+						<small>Explain → Connect → Build → Reflect</small>
+					</div>
+				</article>
+
+				<article class="canvas-node shortcut-node">
+					<p>KEYBOARD</p>
+					<div><kbd>1</kbd><span>Tips</span></div>
+					<div><kbd>2</kbd><span>作品集</span></div>
+					<div><kbd>3</kbd><span>我的 OS</span></div>
+					<div><kbd>R</kbd><span>重置视图</span></div>
+				</article>
+
+				<article class="canvas-node update-node" id="tip-update">
+					<p>WHAT'S NEW</p>
+					<h2>网站空间画布 2.0</h2>
+					<small>三视图、自由拖动、缩放、目录定位和个人资料占位已经上线。</small>
+					<span>2026.08.12</span>
+				</article>
+
+				<article class="canvas-node quote-node">
+					<blockquote>“把学到的东西连接起来，才真正成为自己的知识。”</blockquote>
+					<small>— HappyAI note</small>
+				</article>
+
+				<article class="canvas-node portal-node">
+					<p>NEXT STOP</p>
+					<h2>从一个页面，进入一整个系统。</h2>
+					<div>
+						<button type="button" data-view-target="works">看作品集</button>
+						<button type="button" data-view-target="system">看我的 OS</button>
+					</div>
+				</article>
+			</section>
+
+			<section class="canvas-scene works-scene" data-scene="works" aria-label="作品集画布" hidden>
+				<svg class="scene-lines" viewBox="0 0 1600 900" aria-hidden="true">
+					<path d="M 420 300 C 520 300, 520 265, 590 265" />
+					<path d="M 920 250 C 1040 250, 1040 330, 1135 330" />
+					<path d="M 780 445 C 780 520, 650 520, 650 570" />
+					<path d="M 760 690 C 850 690, 860 690, 940 690" />
+				</svg>
+				<div class="scene-heading">
+					<span>02 / WORKS</span>
+					<h1>作品集</h1>
+					<p>真实项目、学习成果和工具实验将逐步放入这张画布。</p>
+				</div>
+				{
+					works.map((work) => (
+						<article
+							class:list={['canvas-node', 'work-node', `work-${work.tone}`]}
+							id={work.id}
+							style={`--node-x:${work.x}px; --node-y:${work.y}px;`}
+						>
+							<div class="work-node-cover">
+								<span>{work.number}</span>
+								<strong>{work.type}</strong>
+								<i></i><i></i>
+							</div>
+							<div class="work-node-copy">
+								<p>{work.type}</p>
+								<h2>{work.title}</h2>
+								<small>{work.description}</small>
+								<a href={work.href}>{work.cta} <b>↗</b></a>
+							</div>
+						</article>
+					))
+				}
+			</section>
+
+			<section class="canvas-scene system-scene" data-scene="system" aria-label="个人系统画布" hidden>
+				<svg class="scene-lines system-lines" viewBox="0 0 1600 900" aria-hidden="true">
+					<path class="line-yellow" d="M 315 245 C 380 245, 380 225, 430 225" />
+					<path d="M 655 245 C 720 245, 720 210, 780 210" />
+					<path d="M 1010 265 C 1120 265, 1110 335, 1200 335" />
+					<path d="M 910 380 C 910 470, 890 510, 890 585" />
+					<path d="M 580 380 C 580 500, 520 545, 520 610" />
+					<path d="M 660 690 C 760 690, 785 690, 850 690" />
+					<path d="M 1090 690 C 1180 690, 1180 650, 1260 650" />
+				</svg>
+
+				<div class="portrait-node canvas-node" id="identity">
+					<span>YOUR PHOTO</span>
+					<div class="portrait-silhouette">
+						<i></i>
+						<b>H</b>
+					</div>
+					<small>稍后替换为你的照片</small>
+				</div>
+
+				<article class="canvas-node identity-node">
+					<span class="node-stripe stripe-yellow"></span>
+					<div class="tiny-avatar">H</div>
+					<p>HAPPY / ZHL</p>
+					<h1>Happy</h1>
+					<small>AI 学习者 · 系统构建者 · 个人信息待补充</small>
+					<div class="identity-tags"><span>AI Agent</span><span>Knowledge</span><span>Builder</span></div>
+				</article>
+
+				<article class="canvas-node timeline-node" id="timeline">
+					<span class="node-stripe stripe-blue"></span>
+					<p>MY JOURNEY</p>
+					<h2>经历时间线</h2>
+					<ol>
+						<li><span>过去</span><b>你的教育与职业经历</b><small>等待补充时间、地点和故事</small></li>
+						<li><span>现在</span><b>学习 AI 与构建 Agent</b><small>正在整理知识、项目和个人系统</small></li>
+						<li><span>下一站</span><b>让 AI 成为长期搭档</b><small>真实目标与计划等待补充</small></li>
+					</ol>
+				</article>
+
+				<article class="canvas-node info-note story-note" id="story">
+					<p>MY STORY</p>
+					<h2>我为什么开始学习 AI？</h2>
+					<small>这里将写你的转折点、动机与未来方向。它会成为整个网站的叙事核心。</small>
+				</article>
+
+				<article class="canvas-node info-note now-note" id="now">
+					<p>NOW / 2026</p>
+					<h2>此刻正在发生</h2>
+					<ul><li>建立 AI Agent whole picture</li><li>学习 RAG 与工具调用</li><li>把知识变成真实项目</li></ul>
+				</article>
+
+				<article class="canvas-node quote-blue">
+					<blockquote>“我想建立的，不只是网站，而是一套会成长的个人系统。”</blockquote>
+				</article>
+
+				<article class="canvas-node skill-node" id="skills">
+					<span class="node-stripe stripe-green"></span>
+					<p>SKILLS & TOOLS</p>
+					<h2>我现在的工具箱</h2>
+					<div><span>LLM</span><span>Prompt</span><span>RAG</span><span>Agent</span><span>Python</span><span>Astro</span><span>Learning</span></div>
+				</article>
+
+				<article class="canvas-node values-node">
+					<span class="node-stripe stripe-pink"></span>
+					<p>VALUES</p>
+					<h2>长期原则</h2>
+					<ul><li>先理解，再使用框架</li><li>先完成，再持续优化</li><li>记录失败，而不只展示结果</li></ul>
+				</article>
+
+				<article class="canvas-node partner-node" id="partner">
+					<span class="node-stripe stripe-violet"></span>
+					<div class="partner-head"><b>H</b><span>AI PARTNER</span></div>
+					<h2>Happy 的 AI 搭档</h2>
+					<small>未来会接入个人知识库，能够介绍你的经历、作品以及你和 AI 的协作方式。</small>
+					<button type="button" disabled>coming soon</button>
+				</article>
+			</section>
+		</div>
+	</main>
+
+	<div class="canvas-shortcuts">
+		<span><kbd>Scroll</kbd> 缩放</span>
+		<span><kbd>Drag</kbd> 移动画布</span>
+		<span><kbd>1–3</kbd> 切换页面</span>
+		<span><kbd>R</kbd> 视图复位</span>
+	</div>
+
+	<nav class="view-tabs" aria-label="网站视图">
+		<button class="is-active" type="button" data-view-target="tips"><span>01</span> Tips</button>
+		<button type="button" data-view-target="works"><span>02</span> 作品集</button>
+		<button type="button" data-view-target="system"><span>03</span> 我的 OS</button>
+	</nav>
+
+	<div class="zoom-controls">
+		<button type="button" data-zoom="-0.1" aria-label="缩小">−</button>
+		<span id="zoomValue">75%</span>
+		<button type="button" data-zoom="0.1" aria-label="放大">＋</button>
+		<button type="button" id="resetCanvas" aria-label="重置视图">⌂</button>
+		<button class="palette-button" type="button" id="paletteButton" aria-label="切换配色">◩</button>
+	</div>
+
+	<div class="canvas-toast" id="canvasToast" hidden>占位功能：稍后接入真实内容</div>
+
+	<div class="canvas-help-dialog" id="canvasHelpDialog" hidden>
+		<div>
+			<header><b>画布操作说明</b><button id="canvasHelpClose" type="button">×</button></header>
+			<p>拖动空白区域移动画布；滚轮平移；按住 Ctrl/⌘ 滚轮缩放。</p>
+			<p>数字键 1、2、3 切换页面，R 重置，＋／－缩放。</p>
+		</div>
+	</div>
+</div>
+
+<script>
+	const app = document.querySelector('#spatialApp');
+	const stage = document.querySelector('#canvasStage');
+	const canvas = document.querySelector('#spatialCanvas');
+	const zoomValue = document.querySelector('#zoomValue');
+	const minimapViewport = document.querySelector('#minimapViewport');
+	const toast = document.querySelector('#canvasToast');
+	const helpDialog = document.querySelector('#canvasHelpDialog');
+	const sceneWidth = 1600;
+	const sceneHeight = 900;
+	const validViews = ['tips', 'works', 'system'];
+	const requestedView = window.location.hash.replace('#', '');
+	let activeView = validViews.includes(requestedView) ? requestedView : 'tips';
+	let scale = 0.75;
+	let translateX = 0;
+	let translateY = 0;
+	let isDragging = false;
+	let dragMoved = false;
+	let dragStartX = 0;
+	let dragStartY = 0;
+	let startTranslateX = 0;
+	let startTranslateY = 0;
+
+	const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+	const updateCanvas = () => {
+		if (!(canvas instanceof HTMLElement)) return;
+		canvas.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
+		if (zoomValue) zoomValue.textContent = `${Math.round(scale * 100)}%`;
+		if (minimapViewport instanceof HTMLElement && stage instanceof HTMLElement) {
+			const width = clamp((stage.clientWidth / (sceneWidth * scale)) * 100, 18, 100);
+			const height = clamp((stage.clientHeight / (sceneHeight * scale)) * 100, 18, 100);
+			minimapViewport.style.width = `${width}%`;
+			minimapViewport.style.height = `${height}%`;
+			minimapViewport.style.left = `${clamp((-translateX / (sceneWidth * scale)) * 100, 0, 100 - width)}%`;
+			minimapViewport.style.top = `${clamp((-translateY / (sceneHeight * scale)) * 100, 0, 100 - height)}%`;
+		}
+	};
+
+	const fitScene = () => {
+		if (!(stage instanceof HTMLElement)) return;
+		scale = clamp(Math.min((stage.clientWidth - 70) / sceneWidth, (stage.clientHeight - 70) / sceneHeight), 0.42, 0.92);
+		translateX = (stage.clientWidth - sceneWidth * scale) / 2;
+		translateY = (stage.clientHeight - sceneHeight * scale) / 2;
+		updateCanvas();
+	};
+
+	const showView = (view: string, reset = true, updateHash = true) => {
+		if (!validViews.includes(view)) return;
+		activeView = view;
+		if (app instanceof HTMLElement) app.dataset.activeView = view;
+		document.querySelectorAll<HTMLElement>('[data-scene]').forEach((scene) => {
+			scene.hidden = scene.dataset.scene !== view;
+		});
+		document.querySelectorAll<HTMLElement>('.view-tabs [data-view-target]').forEach((button) => {
+			button.classList.toggle('is-active', button.dataset.viewTarget === view);
+		});
+		document.querySelectorAll<HTMLElement>('.canvas-sidebar [data-view-target]').forEach((button) => {
+			button.classList.toggle('is-current-view', button.dataset.viewTarget === view);
+		});
+		if (updateHash && window.location.hash !== `#${view}`) {
+			window.history.replaceState(null, '', `#${view}`);
+		}
+		if (reset) requestAnimationFrame(fitScene);
+	};
+
+	const focusNode = (id: string) => {
+		const node = document.getElementById(id);
+		if (!(node instanceof HTMLElement) || !(stage instanceof HTMLElement)) return;
+		scale = clamp(Math.max(scale, 0.78), 0.48, 1.25);
+		translateX = stage.clientWidth / 2 - (node.offsetLeft + node.offsetWidth / 2) * scale;
+		translateY = stage.clientHeight / 2 - (node.offsetTop + node.offsetHeight / 2) * scale;
+		updateCanvas();
+		node.classList.remove('is-focused');
+		requestAnimationFrame(() => node.classList.add('is-focused'));
+		window.setTimeout(() => node.classList.remove('is-focused'), 900);
+	};
+
+	document.querySelectorAll<HTMLElement>('[data-view-target]').forEach((button) => {
+		button.addEventListener('click', () => {
+			const view = button.dataset.viewTarget;
+			if (!view) return;
+			const target = button.dataset.focusTarget;
+			showView(view);
+			if (target) window.setTimeout(() => focusNode(target), 80);
+		});
+	});
+
+	if (stage instanceof HTMLElement) {
+		stage.addEventListener('pointerdown', (event) => {
+			if ((event.target as HTMLElement).closest('a, button')) return;
+			isDragging = true;
+			dragMoved = false;
+			dragStartX = event.clientX;
+			dragStartY = event.clientY;
+			startTranslateX = translateX;
+			startTranslateY = translateY;
+			stage.classList.add('is-dragging');
+			stage.setPointerCapture(event.pointerId);
+		});
+
+		stage.addEventListener('pointermove', (event) => {
+			if (!isDragging) return;
+			const deltaX = event.clientX - dragStartX;
+			const deltaY = event.clientY - dragStartY;
+			if (Math.abs(deltaX) + Math.abs(deltaY) > 5) dragMoved = true;
+			translateX = startTranslateX + deltaX;
+			translateY = startTranslateY + deltaY;
+			updateCanvas();
+		});
+
+		const stopDrag = () => {
+			isDragging = false;
+			stage.classList.remove('is-dragging');
+		};
+		stage.addEventListener('pointerup', stopDrag);
+		stage.addEventListener('pointercancel', stopDrag);
+
+		stage.addEventListener('dblclick', (event) => {
+			if (dragMoved) return;
+			const node = (event.target as HTMLElement).closest('.canvas-node');
+			if (node instanceof HTMLElement && node.id) focusNode(node.id);
+		});
+
+		stage.addEventListener('wheel', (event) => {
+			event.preventDefault();
+			if (event.ctrlKey || event.metaKey) {
+				const previousScale = scale;
+				scale = clamp(scale - event.deltaY * 0.001, 0.38, 1.35);
+				const rect = stage.getBoundingClientRect();
+				const pointerX = event.clientX - rect.left;
+				const pointerY = event.clientY - rect.top;
+				const worldX = (pointerX - translateX) / previousScale;
+				const worldY = (pointerY - translateY) / previousScale;
+				translateX = pointerX - worldX * scale;
+				translateY = pointerY - worldY * scale;
+			} else {
+				translateX -= event.deltaX || event.deltaY * 0.45;
+				translateY -= event.deltaY * 0.55;
+			}
+			updateCanvas();
+		}, { passive: false });
+	}
+
+	document.querySelectorAll<HTMLElement>('[data-zoom]').forEach((button) => {
+		button.addEventListener('click', () => {
+			if (!(stage instanceof HTMLElement)) return;
+			const nextScale = clamp(scale + Number(button.dataset.zoom), 0.38, 1.35);
+			const centerX = stage.clientWidth / 2;
+			const centerY = stage.clientHeight / 2;
+			const worldX = (centerX - translateX) / scale;
+			const worldY = (centerY - translateY) / scale;
+			scale = nextScale;
+			translateX = centerX - worldX * scale;
+			translateY = centerY - worldY * scale;
+			updateCanvas();
+		});
+	});
+
+	document.querySelector('#resetCanvas')?.addEventListener('click', fitScene);
+	document.querySelector('#canvasMinimap')?.addEventListener('click', fitScene);
+
+	const showToast = (message: string) => {
+		if (!(toast instanceof HTMLElement)) return;
+		toast.textContent = message;
+		toast.hidden = false;
+		window.setTimeout(() => { toast.hidden = true; }, 2200);
+	};
+
+	document.querySelector('#canvasAdd')?.addEventListener('click', () => showToast('“新建”是骨架占位，后续可以接入你的内容编辑流程'));
+	document.querySelector('#paletteButton')?.addEventListener('click', () => {
+		if (!(app instanceof HTMLElement)) return;
+		app.classList.toggle('is-night');
+		showToast(app.classList.contains('is-night') ? '已切换夜间画布' : '已切换奶油纸张画布');
+	});
+
+	document.querySelector('#canvasHelp')?.addEventListener('click', () => {
+		if (helpDialog instanceof HTMLElement) helpDialog.hidden = false;
+	});
+	document.querySelector('#canvasHelpClose')?.addEventListener('click', () => {
+		if (helpDialog instanceof HTMLElement) helpDialog.hidden = true;
+	});
+
+	const updateClock = () => {
+		const clock = document.querySelector('#canvasClock');
+		if (clock) clock.textContent = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+	};
+	updateClock();
+	window.setInterval(updateClock, 30_000);
+
+	document.addEventListener('keydown', (event) => {
+		if ((event.target as HTMLElement)?.matches('input, textarea')) return;
+		if (event.key === '1') showView('tips');
+		if (event.key === '2') showView('works');
+		if (event.key === '3') showView('system');
+		if (event.key.toLowerCase() === 'r') fitScene();
+		if (event.key === '+' || event.key === '=') {
+			scale = clamp(scale + 0.1, 0.38, 1.35);
+			updateCanvas();
+		}
+		if (event.key === '-') {
+			scale = clamp(scale - 0.1, 0.38, 1.35);
+			updateCanvas();
+		}
+		if (event.key === 'Escape' && helpDialog instanceof HTMLElement) helpDialog.hidden = true;
+	});
+
+	window.addEventListener('resize', fitScene);
+	window.addEventListener('hashchange', () => {
+		const view = window.location.hash.replace('#', '');
+		if (validViews.includes(view)) showView(view, true, false);
+	});
+	showView(activeView);
+</script>

@@ -1,4 +1,6 @@
 ---
+import CanvasHome from '../components/CanvasHome.astro';
+
 const learningAreas = [
 	{
 		index: '01',
@@ -163,8 +165,11 @@ const portfolioProjects = [
 		</script>
 	</head>
 
-	<body class="is-booting">
-		<a class="skip-link" href="#main">跳到主要内容</a>
+	<body class="canvas-mode">
+		<CanvasHome />
+		{false && (
+			<>
+				<a class="skip-link" href="#main">跳到主要内容</a>
 		<div class="boot-screen" id="bootScreen" role="dialog" aria-labelledby="bootTitle">
 			<div class="boot-grid" aria-hidden="true"></div>
 			<div class="boot-terminal">
@@ -529,7 +534,9 @@ const portfolioProjects = [
 				<span>1 PERSON + AI = 1 TEAM</span>
 			</div>
 			<p>© <span id="year">2026</span> Happy · Built with AI & curiosity.</p>
-		</footer>
+				</footer>
+			</>
+		)}
 
 		<script>
 			const root = document.documentElement;
