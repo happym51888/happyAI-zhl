@@ -2,7 +2,7 @@
 
 Happy 的 AI 学习笔记、知识地图与实践记录。
 
-网站使用 [Astro](https://astro.build/) 和 [Starlight](https://starlight.astro.build/) 构建，并通过 Vercel 自动部署。
+网站使用 [Astro](https://astro.build/) 和 [Starlight](https://starlight.astro.build/) 构建，并通过 Cloudflare Workers 自动部署。
 
 ## 添加一篇笔记
 
@@ -18,7 +18,7 @@ Happy 的 AI 学习笔记、知识地图与实践记录。
 
 3. 使用 Markdown 编写正文。
 4. 如果需要显示在左侧菜单，在 `astro.config.mjs` 的 `sidebar` 中添加它。
-5. 提交并推送到 GitHub，Vercel 会自动重新部署。
+5. 提交并推送到 GitHub，Cloudflare Workers 会自动重新部署。
 
 ## 本地预览
 
