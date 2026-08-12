@@ -1,0 +1,33 @@
+---
+title: AI Agent 全景图
+description: 交互式梳理 LLM、RAG、Agent、框架和生产治理之间的关系。
+---
+
+import KnowledgeMap from '../../../components/KnowledgeMap.astro';
+
+这张图从上到下展示一个 AI Agent 系统的主要层次；点击任意节点可以打开对应主题。
+
+<KnowledgeMap />
+
+## 如何阅读
+
+1. **Python 应用**通过 HTTP API 和 JSON 与模型及外部服务通信。
+2. **Prompt** 把指令、问题和上下文交给 **LLM**。
+3. **RAG** 检索外部资料，并把相关知识补充进 Prompt。
+4. **Agent** 围绕目标执行 Planning → Tool → Observation 循环。
+5. **LangChain** 提供常用组件，**LangGraph** 管理复杂状态和流程。
+6. **Evaluation、Tracing、成本与安全**贯穿所有层。
+
+## 三个容易混淆的地方
+
+### LLM 与 Agent
+
+LLM 是模型；Agent 是包含模型、工具、状态和控制循环的完整应用系统。
+
+### RAG 与 Agent
+
+RAG 解决“从哪里获得可靠知识”，Agent 解决“下一步应该采取什么行动”，两者可以独立使用，也可以结合。
+
+### LangChain 与 LangGraph
+
+LangChain 偏向组件和常见模式，LangGraph 偏向有状态流程编排，它们都不是 LLM 本身。

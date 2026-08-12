@@ -1,0 +1,42 @@
+---
+title: HappyAI · ZHL
+description: Happy 的 AI 学习笔记、知识地图与实践记录。
+template: splash
+hero:
+  tagline: 从 LLM、RAG 到 AI Agent，把零散概念连接成一张可以持续生长的知识地图。
+  actions:
+    - text: 开始学习
+      link: /learning-path/
+      icon: right-arrow
+    - text: 查看全景图
+      link: /projects/ai-agent-whole-picture/
+      icon: open-book
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## 建立自己的 AI 知识体系
+
+这个网站用于记录 Happy 学习 AI 的过程：先理解基础概念，再动手构建项目，最后学习如何评估、安全地运行和持续改进 AI 系统。
+
+<CardGrid stagger>
+	<Card title="LLM：语言智能核心" icon="document">
+		理解 Token、上下文窗口、Prompt、结构化输出和 Tool Calling。
+	</Card>
+	<Card title="RAG：连接外部知识" icon="open-book">
+		理解 Chunking、Embedding、向量检索和 Reranking 如何协作。
+	</Card>
+	<Card title="Agent：从回答到行动" icon="setting">
+		理解工具、规划、记忆、状态以及 Human-in-the-loop。
+	</Card>
+	<Card title="工程化：可靠地投入使用" icon="pencil">
+		关注 Evaluation、Tracing、成本、权限和 Prompt Injection 防护。
+	</Card>
+</CardGrid>
+
+## 一句话 Whole picture
+
+> **LLM 是大脑，RAG 提供外部知识，工具提供行动能力，Agent 负责循环决策，LangChain/LangGraph 帮助组织组件，而评估、追踪和安全控制让整个系统能够可靠运行。**
+
+[按推荐顺序开始学习 →](/learning-path/)

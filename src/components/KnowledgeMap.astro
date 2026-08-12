@@ -1,0 +1,392 @@
+<div class="knowledge-map" aria-label="AI Agent 知识关系图">
+	<section class="layer application">
+		<header>
+			<strong>应用接口层</strong>
+			<span>Application</span>
+		</header>
+		<div class="flow">
+			<a class="node" href="/learning-path/">
+				<b>Python 应用</b>
+				<small>实现业务逻辑</small>
+			</a>
+			<i aria-hidden="true">→</i>
+			<a class="node" href="/ai-basics/">
+				<b>HTTP API</b>
+				<small>调用模型与服务</small>
+			</a>
+			<i aria-hidden="true">→</i>
+			<a class="node" href="/ai-basics/">
+				<b>JSON</b>
+				<small>承载消息与参数</small>
+			</a>
+		</div>
+	</section>
+
+	<div class="down" aria-hidden="true">↓</div>
+
+	<section class="layer model">
+		<header>
+			<strong>模型交互层</strong>
+			<span>Model</span>
+		</header>
+		<div class="flow">
+			<a class="node support" href="/llm/">
+				<b>Token + 上下文窗口</b>
+				<small>容量与成本边界</small>
+			</a>
+			<i aria-hidden="true">→</i>
+			<a class="node" href="/llm/">
+				<b>Prompt</b>
+				<small>指令 + 问题 + 上下文</small>
+			</a>
+			<i aria-hidden="true">→</i>
+			<a class="node core" href="/llm/">
+				<b>LLM</b>
+				<small>理解 · 推断 · 生成</small>
+			</a>
+			<i aria-hidden="true">→</i>
+			<div class="split">
+				<a class="node" href="/llm/">结构化输出</a>
+				<a class="node" href="/llm/">Tool Calling</a>
+			</div>
+		</div>
+	</section>
+
+	<div class="down" aria-hidden="true">↕</div>
+
+	<section class="layer rag">
+		<header>
+			<strong>知识增强层</strong>
+			<span>RAG</span>
+		</header>
+		<div class="flow long">
+			<a class="node" href="/rag/">外部文档</a>
+			<i aria-hidden="true">→</i>
+			<a class="node" href="/rag/">Chunking</a>
+			<i aria-hidden="true">→</i>
+			<a class="node" href="/rag/">Embedding</a>
+			<i aria-hidden="true">→</i>
+			<a class="node" href="/rag/">向量检索</a>
+			<i aria-hidden="true">→</i>
+			<a class="node" href="/rag/">Reranking</a>
+			<i aria-hidden="true">→</i>
+			<a class="node core" href="/rag/">相关知识进入 Prompt</a>
+		</div>
+		<p class="relationship">RAG 给 LLM 提供外部知识，也可以被 Agent 当作一个检索工具。</p>
+	</section>
+
+	<div class="down" aria-hidden="true">↕</div>
+
+	<section class="layer agent">
+		<header>
+			<strong>Agent 编排层</strong>
+			<span>Agent</span>
+		</header>
+		<div class="agent-layout">
+			<div class="cycle">
+				<a class="node core" href="/agent/">Agent</a>
+				<i aria-hidden="true">→</i>
+				<a class="node" href="/agent/">Planning</a>
+				<i aria-hidden="true">→</i>
+				<a class="node" href="/agent/">工具</a>
+				<i aria-hidden="true">→</i>
+				<a class="node" href="/agent/">Observation</a>
+				<i class="return" aria-hidden="true">↩</i>
+			</div>
+			<div class="supports">
+				<a class="node" href="/agent/">Memory</a>
+				<a class="node" href="/agent/">State</a>
+				<a class="node" href="/agent/">Human-in-the-loop</a>
+			</div>
+		</div>
+	</section>
+
+	<div class="down" aria-hidden="true">↓</div>
+
+	<div class="bottom-layers">
+		<section class="layer framework">
+			<header>
+				<strong>开发框架</strong>
+				<span>Frameworks</span>
+			</header>
+			<div class="compact-flow">
+				<a class="node" href="/frameworks/">
+					<b>LangChain</b>
+					<small>组装模型、RAG 与工具</small>
+				</a>
+				<a class="node" href="/frameworks/">
+					<b>LangGraph</b>
+					<small>管理状态、循环与审核</small>
+				</a>
+			</div>
+		</section>
+
+		<section class="layer production">
+			<header>
+				<strong>生产治理</strong>
+				<span>Production</span>
+			</header>
+			<div class="chips">
+				<a href="/production/">Evaluation</a>
+				<a href="/production/">Tracing</a>
+				<a href="/production/">成本</a>
+				<a href="/production/">权限</a>
+				<a href="/production/">Prompt Injection 防护</a>
+			</div>
+		</section>
+	</div>
+</div>
+
+<style>
+	.knowledge-map {
+		--map-border: var(--sl-color-gray-5);
+		display: grid;
+		gap: 0.5rem;
+		margin-block: 1.5rem 2.5rem;
+	}
+
+	.layer {
+		--lane-color: var(--sl-color-accent);
+		display: grid;
+		grid-template-columns: 9.5rem minmax(0, 1fr);
+		gap: 1rem;
+		padding: 1rem;
+		border: 1px dashed color-mix(in srgb, var(--lane-color) 60%, var(--map-border));
+		border-radius: 1rem;
+		background: color-mix(in srgb, var(--lane-color) 7%, var(--sl-color-black));
+	}
+
+	.layer > header {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding-inline-end: 1rem;
+		border-inline-end: 3px solid var(--lane-color);
+	}
+
+	.layer > header strong {
+		font-size: 0.98rem;
+	}
+
+	.layer > header span {
+		color: var(--sl-color-gray-3);
+		font-size: 0.72rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.flow,
+	.cycle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.55rem;
+		min-width: 0;
+	}
+
+	.flow.long {
+		flex-wrap: wrap;
+	}
+
+	.flow i,
+	.cycle i {
+		flex: 0 0 auto;
+		color: var(--sl-color-gray-3);
+		font-style: normal;
+		font-weight: 700;
+	}
+
+	.node {
+		display: inline-flex;
+		flex: 1 1 8rem;
+		min-width: 6.5rem;
+		min-height: 3.75rem;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+		padding: 0.65rem 0.8rem;
+		border: 1px solid color-mix(in srgb, var(--lane-color) 58%, var(--map-border));
+		border-radius: 0.75rem;
+		background: color-mix(in srgb, var(--lane-color) 12%, var(--sl-color-black));
+		color: var(--sl-color-white);
+		text-align: center;
+		text-decoration: none;
+		transition: border-color 120ms ease, transform 120ms ease;
+	}
+
+	.node:hover,
+	.node:focus-visible {
+		border-color: var(--lane-color);
+		transform: translateY(-2px);
+	}
+
+	.node b {
+		font-size: 0.9rem;
+	}
+
+	.node small {
+		margin-top: 0.18rem;
+		color: var(--sl-color-gray-3);
+		font-size: 0.7rem;
+		line-height: 1.35;
+	}
+
+	.node.core {
+		border-width: 2px;
+		border-color: var(--lane-color);
+		background: color-mix(in srgb, var(--lane-color) 20%, var(--sl-color-black));
+	}
+
+	.node.support {
+		border-style: dashed;
+	}
+
+	.split {
+		display: grid;
+		flex: 1 1 9rem;
+		gap: 0.4rem;
+	}
+
+	.split .node {
+		min-height: 2.1rem;
+		padding: 0.35rem 0.55rem;
+		font-size: 0.76rem;
+	}
+
+	.down {
+		height: 1.5rem;
+		color: var(--sl-color-gray-3);
+		text-align: center;
+		font-size: 1.25rem;
+		line-height: 1.5rem;
+	}
+
+	.rag {
+		--lane-color: #8d65ae;
+	}
+
+	.agent {
+		--lane-color: #368aaf;
+	}
+
+	.framework {
+		--lane-color: #4f9361;
+	}
+
+	.production {
+		--lane-color: #8a6d36;
+	}
+
+	.relationship {
+		grid-column: 2;
+		margin: 0.65rem 0 0;
+		color: var(--sl-color-gray-3);
+		font-size: 0.78rem;
+		text-align: center;
+	}
+
+	.agent-layout {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.cycle .node {
+		flex-basis: 7rem;
+	}
+
+	.cycle .return {
+		font-size: 1.3rem;
+	}
+
+	.supports,
+	.compact-flow,
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+		justify-content: center;
+	}
+
+	.supports .node {
+		min-height: 2.4rem;
+		padding: 0.4rem 0.7rem;
+		font-size: 0.78rem;
+		border-style: dashed;
+	}
+
+	.bottom-layers {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.75rem;
+	}
+
+	.bottom-layers .layer {
+		grid-template-columns: 8rem minmax(0, 1fr);
+	}
+
+	.compact-flow .node {
+		min-width: 9rem;
+	}
+
+	.chips {
+		align-content: center;
+	}
+
+	.chips a {
+		padding: 0.35rem 0.65rem;
+		border: 1px solid color-mix(in srgb, var(--lane-color) 55%, var(--map-border));
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--lane-color) 10%, var(--sl-color-black));
+		color: var(--sl-color-white);
+		font-size: 0.72rem;
+		text-decoration: none;
+	}
+
+	.chips a:hover {
+		border-color: var(--lane-color);
+	}
+
+	@media (max-width: 64rem) {
+		.bottom-layers {
+			grid-template-columns: 1fr;
+		}
+
+		.flow {
+			flex-wrap: wrap;
+		}
+	}
+
+	@media (max-width: 42rem) {
+		.layer,
+		.bottom-layers .layer {
+			grid-template-columns: 1fr;
+		}
+
+		.layer > header {
+			padding: 0 0 0.6rem;
+			border-inline-end: 0;
+			border-bottom: 3px solid var(--lane-color);
+		}
+
+		.relationship {
+			grid-column: 1;
+		}
+
+		.flow,
+		.cycle {
+			align-items: stretch;
+			flex-direction: column;
+		}
+
+		.flow i,
+		.cycle i {
+			transform: rotate(90deg);
+			text-align: center;
+		}
+
+		.node,
+		.cycle .node {
+			width: 100%;
+		}
+	}
+</style>

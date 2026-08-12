@@ -1,0 +1,50 @@
+:root {
+	--sl-color-accent-low: #142d4f;
+	--sl-color-accent: #74a7ff;
+	--sl-color-accent-high: #dce9ff;
+	--sl-color-white: #f7f9fc;
+	--sl-color-gray-1: #e8edf5;
+	--sl-color-gray-2: #bbc5d3;
+	--sl-color-gray-3: #7d8a9e;
+	--sl-color-gray-4: #4a5669;
+	--sl-color-gray-5: #2c3544;
+	--sl-color-gray-6: #1b2330;
+	--sl-color-black: #111721;
+	--sl-font: Inter, "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #e9f0ff;
+	--sl-color-accent: #315fbd;
+	--sl-color-accent-high: #18315f;
+	--sl-color-white: #172033;
+	--sl-color-gray-1: #2d3748;
+	--sl-color-gray-2: #536174;
+	--sl-color-gray-3: #758196;
+	--sl-color-gray-4: #aeb7c5;
+	--sl-color-gray-5: #dce1e9;
+	--sl-color-gray-6: #eef1f5;
+	--sl-color-gray-7: #f7f8fa;
+	--sl-color-black: #ffffff;
+}
+
+.hero h1 {
+	letter-spacing: -0.045em;
+}
+
+.hero .tagline {
+	max-width: 42rem;
+}
+
+.card {
+	border-radius: 0.8rem;
+}
+
+.sl-markdown-content h2 {
+	letter-spacing: -0.02em;
+}
+
+.sl-markdown-content blockquote {
+	border-inline-start-color: var(--sl-color-accent);
+	background: var(--sl-color-accent-low);
+}
