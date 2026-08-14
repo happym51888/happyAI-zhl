@@ -782,46 +782,14 @@
 	place-items: center;
 	overflow: hidden;
 	border: 1px solid var(--canvas-line);
-	background:
-		linear-gradient(145deg, transparent 48%, rgba(76, 120, 185, 0.08) 49%, transparent 50%),
-		#e8e2d7;
+	background: var(--canvas-blue);
 }
 
-.portrait-silhouette::before {
-	position: absolute;
-	top: 45px;
-	width: 78px;
-	height: 78px;
-	border-radius: 50%;
-	background: #c3b8a8;
-	content: "";
-}
-
-.portrait-silhouette::after {
-	position: absolute;
-	bottom: -70px;
-	width: 180px;
-	height: 220px;
-	border-radius: 50% 50% 0 0;
-	background: #4d6280;
-	content: "";
-}
-
-.portrait-silhouette i {
-	position: absolute;
-	z-index: 1;
-	top: 35px;
-	width: 100px;
-	height: 115px;
-	border-radius: 50% 50% 40% 40%;
-	border-top: 22px solid #3c3b3b;
-}
-
-.portrait-silhouette b {
-	z-index: 2;
-	margin-top: 40px;
-	color: rgba(255, 255, 255, 0.88);
-	font-size: 38px;
+.portrait-silhouette img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
 }
 
 .identity-node {
@@ -837,11 +805,19 @@
 	width: 38px;
 	height: 38px;
 	margin-bottom: 14px;
+	overflow: hidden;
 	place-items: center;
 	border-radius: 50%;
 	background: var(--canvas-yellow);
 	color: #393522;
 	font-weight: 800;
+}
+
+.tiny-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: 58% 23%;
 }
 
 .identity-node h1 {

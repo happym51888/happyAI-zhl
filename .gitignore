@@ -24,3 +24,4 @@ pnpm-debug.log*
 .vscode/
 AGENTS.md
 CLAUDE.md
+.agent-backups/
