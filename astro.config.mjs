@@ -4,7 +4,7 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://happyai-zhl.happym51888.workers.dev',
+	site: 'https://happyai-zhl.pages.dev',
 	integrations: [
 		starlight({
 			title: 'HappyAI · ZHL',
