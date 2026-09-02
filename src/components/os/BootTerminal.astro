@@ -1,0 +1,52 @@
+---
+const lines = [
+	{ type: 'cmd', text: 'whoami' },
+	{ type: 'out', text: 'Happy' },
+	{ type: 'cmd', text: 'cat about.md' },
+	{ type: 'out', text: '在 AI 时代认真学习的人' },
+	{ type: 'sub', text: '通信工程师 / 和 Agent 搭档的第 1 年' },
+	{ type: 'sub', text: '通信网络 → AI Agent，HappyOS building' },
+	{ type: 'cmd', text: 'echo "1 person + AI = 1 team"' },
+	{ type: 'out', text: '1 person + AI = 1 team' },
+	{ type: 'cmd', text: 'open happy-os.app' },
+];
+---
+
+<div class="boot" id="bootScreen">
+	<div class="boot-glow" aria-hidden="true"></div>
+
+	<section class="boot-window" aria-label="开机终端">
+		<header class="boot-bar">
+			<i></i><i></i><i></i>
+			<span>happy@universe ~ zsh</span>
+		</header>
+
+		<div class="boot-body" id="bootBody">
+			{
+				lines.map((line, index) => (
+					<p class:list={['boot-line', `boot-${line.type}`]} data-boot-line={index}>
+						{line.type === 'cmd' && <b>$</b>}
+						{line.type === 'out' && <em>&gt;</em>}
+						<span>{line.text}</span>
+					</p>
+				))
+			}
+			<p class="boot-cursor" id="bootCursor" aria-hidden="true"><i></i></p>
+		</div>
+
+		<button class="boot-launch" id="bootLaunch" type="button">
+			<span>Press Enter to Launch</span>
+			<b aria-hidden="true">↓</b>
+		</button>
+	</section>
+
+	<button class="boot-skip" id="bootSkip" type="button">skip →</button>
+</div>
+
+<noscript>
+	<style>
+		#bootScreen {
+			display: none;
+		}
+	</style>
+</noscript>

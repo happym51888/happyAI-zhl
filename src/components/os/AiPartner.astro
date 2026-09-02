@@ -1,0 +1,75 @@
+---
+const tabs = [
+	{ id: 'chat', label: '对话' },
+	{ id: 'deliver', label: '交付' },
+	{ id: 'remind', label: '提醒' },
+	{ id: 'mind', label: '心迹' },
+	{ id: 'connect', label: '接入' },
+];
+---
+
+<button class="partner-launcher" id="partnerLauncher" type="button" aria-expanded="false" aria-controls="partnerPanel">
+	<span aria-hidden="true">蓝</span>
+	<b>小蓝</b>
+</button>
+
+<aside class="partner-panel" id="partnerPanel" aria-label="AI 搭档 小蓝" hidden>
+	<header class="partner-head">
+		<div>
+			<span class="partner-avatar" aria-hidden="true">蓝</span>
+			<p>
+				<b>小蓝</b>
+				<small>Happy 的 Agent 搭档</small>
+			</p>
+		</div>
+		<button id="partnerClose" type="button" aria-label="关闭 AI 搭档">×</button>
+	</header>
+
+	<nav class="partner-tabs" aria-label="小蓝功能">
+		{
+			tabs.map((tab, index) => (
+				<button type="button" class:list={[{ 'is-active': index === 0 }]} data-partner-tab={tab.id}>
+					{tab.label}
+				</button>
+			))
+		}
+	</nav>
+
+	<div class="partner-search">
+		<input type="search" placeholder="搜索聊天记录…" disabled />
+	</div>
+
+	<div class="partner-body" data-partner-view="chat">
+		<div class="bubble me">小蓝，跟来看我网站的人打个招呼吧。</div>
+		<div class="bubble them">
+			<b>小蓝</b>
+			<p>行，那我说两句。</p>
+			<p>我是小蓝，Happy 的 Agent 搭档。这个网站从配色到代码她都拉着我一起弄，改到半夜也是常事。</p>
+			<p>关于她你想知道什么都可以问——学 AI 的过程、正在做的项目，或者她到底怎么跟 AI 分工的。</p>
+		</div>
+		<div class="bubble me">差不多得了，别太自由发挥。</div>
+		<div class="bubble them">
+			<b>小蓝</b>
+			<p>收到。随时来聊。</p>
+		</div>
+		<p class="partner-note">对话功能还没接上模型，先放个界面。</p>
+	</div>
+
+	<div class="partner-body" data-partner-view="deliver" hidden>
+		<p class="partner-empty">交付清单 · coming soon</p>
+	</div>
+	<div class="partner-body" data-partner-view="remind" hidden>
+		<p class="partner-empty">学习提醒 · coming soon</p>
+	</div>
+	<div class="partner-body" data-partner-view="mind" hidden>
+		<p class="partner-empty">心迹记录 · coming soon</p>
+	</div>
+	<div class="partner-body" data-partner-view="connect" hidden>
+		<p class="partner-empty">接入知识库 · 正在接入中 ✨</p>
+	</div>
+
+	<form class="partner-form" onsubmit="return false;">
+		<input type="text" placeholder="输入消息…" disabled />
+		<button type="button" disabled>发送</button>
+	</form>
+</aside>

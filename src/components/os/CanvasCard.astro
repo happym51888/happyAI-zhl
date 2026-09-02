@@ -1,0 +1,219 @@
+---
+import type { Card } from './cards';
+
+interface Props {
+	card: Card;
+}
+
+const { card } = Astro.props;
+const tone = card.tone ?? 'plain';
+const isInternal = card.href?.startsWith('/') || card.href?.startsWith('#');
+---
+
+<article
+	class:list={['card', `card-${card.kind}`, `tone-${tone}`]}
+	id={card.id}
+	data-card={card.id}
+	style={`--x:${card.x}px; --y:${card.y}px; --w:${card.w}px;`}
+	tabindex="0"
+>
+	<span class="card-stripe" aria-hidden="true"></span>
+
+	{
+		card.kind === 'hero' && (
+			<div class="hero-card">
+				<img class="hero-avatar" src="/images/happy-character-blue-yellow.png" alt="Happy 的个人形象插画" />
+				<p class="eyebrow">{card.eyebrow}</p>
+				<h2 class="hero-name">{card.heading}</h2>
+				<p class="card-body">{card.body}</p>
+				<ul class="chips">
+					{card.tags?.map((tag) => <li>{tag}</li>)}
+				</ul>
+			</div>
+		)
+	}
+
+	{
+		card.kind === 'photo' && (
+			<div class="photo-card">
+				<span class="photo-tag">HAPPY / CHARACTER</span>
+				<img src="/images/happy-character-blue-yellow.png" alt="Happy 的蓝黄手绘形象" />
+				<span class="photo-caption">AI learner &amp; builder</span>
+			</div>
+		)
+	}
+
+	{
+		card.kind === 'link' && (
+			<>
+				<p class="eyebrow">{card.eyebrow}</p>
+				<h2 class="card-title">{card.heading}</h2>
+				<p class="card-body">{card.body}</p>
+				{card.href ? (
+					<a class="card-link" href={card.href} rel={isInternal ? undefined : 'noreferrer'}>
+						{card.cta} <b aria-hidden="true">↗</b>
+					</a>
+				) : (
+					card.cta && <span class="card-hint">{card.cta}</span>
+				)}
+			</>
+		)
+	}
+
+	{
+		card.kind === 'list' && (
+			<>
+				<p class="eyebrow">{card.eyebrow}</p>
+				<h2 class="card-title">{card.heading}</h2>
+				<ul class="bullet-list">
+					{card.items?.map((item) => <li>{item}</li>)}
+				</ul>
+				{card.body && <p class="card-body">{card.body}</p>}
+				{card.href && (
+					<a class="card-link" href={card.href}>
+						{card.cta} <b aria-hidden="true">↗</b>
+					</a>
+				)}
+			</>
+		)
+	}
+
+	{
+		card.kind === 'note' && (
+			<div class="note-card">
+				<h2 class="note-title">{card.heading}</h2>
+				<p>{card.body}</p>
+			</div>
+		)
+	}
+
+	{
+		card.kind === 'quote' && (
+			<blockquote class="quote-card">
+				<p>{card.quote}</p>
+				<footer>{card.source}</footer>
+			</blockquote>
+		)
+	}
+
+	{
+		card.kind === 'timeline' && (
+			<>
+				<p class="eyebrow">{card.eyebrow}</p>
+				<h2 class="card-title">{card.heading}</h2>
+				<ol class="timeline">
+					{card.steps?.map((step) => (
+						<li>
+							<span>{step.time}</span>
+							<b>{step.title}</b>
+							<small>{step.note}</small>
+						</li>
+					))}
+				</ol>
+			</>
+		)
+	}
+
+	{
+		card.kind === 'tags' && (
+			<>
+				<p class="eyebrow">{card.eyebrow}</p>
+				<h2 class="card-title">{card.heading}</h2>
+				<ul class="chips wide">
+					{card.tags?.map((tag) => <li>{tag}</li>)}
+				</ul>
+			</>
+		)
+	}
+
+	{
+		card.kind === 'work' && (
+			<div class="work-card">
+				<p class="eyebrow">WORK WITH ME</p>
+				<h2 class="card-title">1 person + AI = 1 team</h2>
+				<div class="work-rows">
+					<div>
+						<span aria-hidden="true">✍️</span>
+						<b>学习笔记与拆解</b>
+						<small>把复杂概念讲清楚，欢迎交流和纠错</small>
+					</div>
+					<div>
+						<span aria-hidden="true">🛠️</span>
+						<b>Agent 工作流</b>
+						<small>把重复的活交给 Agent，人只做判断</small>
+					</div>
+				</div>
+				<div class="work-contact">
+					<a href="https://github.com/happym51888/happyAI-zhl" rel="noreferrer">💻 GitHub</a>
+					<span>📮 邮箱待补充</span>
+				</div>
+			</div>
+		)
+	}
+
+	{
+		card.kind === 'evolution' && (
+			<div class="evolution-card">
+				<p class="eyebrow">网页进化史</p>
+				<ol class="evolution-list">
+					<li>
+						<b>Ver 1</b>
+						<span>文档站 · Starlight 知识库</span>
+					</li>
+					<li>
+						<b>Ver 2</b>
+						<span>个人主页 · 终端风格长页</span>
+					</li>
+					<li>
+						<b>Ver 3</b>
+						<span>当前版本 · 终端 × 无限画布</span>
+						<button type="button" data-open-easter>打开</button>
+					</li>
+				</ol>
+				<a class="card-link" href="/notes/">Playground <b aria-hidden="true">↗</b></a>
+			</div>
+		)
+	}
+
+	{
+		card.kind === 'terminal' && (
+			<div class="mini-terminal">
+				<div class="mini-terminal-bar">
+					<i></i><i></i><i></i>
+					<span>happy@universe ~ zsh</span>
+				</div>
+				<div class="mini-terminal-body">
+					<p><b>$</b> echo &quot;see you&quot;</p>
+					<p class="out">See you next time.</p>
+					<p><b>$</b> cat contact.md</p>
+					<p class="out">💻 GitHub @happym51888</p>
+					<p class="out">📮 邮箱待补充</p>
+					<p><b>$</b> fortune</p>
+					<p class="out quote">“把学到的东西连接起来，才真正成为自己的知识。”</p>
+					<p><b>$</b> exit</p>
+					<p class="dim">[Process completed]</p>
+				</div>
+			</div>
+		)
+	}
+
+	{
+		card.kind === 'project' && (
+			<div class="project-card">
+				<div class="project-cover" aria-hidden="true">
+					<span>{card.number}</span>
+					<strong>{card.cover}</strong>
+					<i></i><i></i>
+				</div>
+				<div class="project-copy">
+					<div class="project-meta">
+						<span>{card.number}</span>
+						<b>{card.status}</b>
+					</div>
+					<h2 class="card-title">{card.heading}</h2>
+					<p class="card-body">{card.body}</p>
+				</div>
+			</div>
+		)
+	}
+</article>

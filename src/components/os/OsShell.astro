@@ -1,0 +1,590 @@
+---
+import './os.css';
+import AiPartner from './AiPartner.astro';
+import BootTerminal from './BootTerminal.astro';
+import CanvasCard from './CanvasCard.astro';
+import { estimateHeight, scenes, sceneTabs, type Scene } from './cards';
+
+function connectors(scene: Scene) {
+	const byId = new Map(scene.cards.map((card) => [card.id, card]));
+	return scene.links.flatMap(([fromId, toId]) => {
+		const from = byId.get(fromId);
+		const to = byId.get(toId);
+		if (!from || !to) return [];
+		const x1 = from.x + from.w / 2;
+		const y1 = from.y + estimateHeight(from) / 2;
+		const x2 = to.x + to.w / 2;
+		const y2 = to.y + estimateHeight(to) / 2;
+		const mid = (x1 + x2) / 2;
+		return [{ d: `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}` }];
+	});
+}
+---
+
+<div class="os" id="osApp" data-view="home">
+	<BootTerminal />
+
+	<header class="os-topbar">
+		<a class="os-brand" href="/" aria-label="Happy OS 首页">
+			<span aria-hidden="true">H</span>
+			<strong>happy OS</strong>
+		</a>
+
+		<nav class="os-quicknav" aria-label="快速跳转">
+			<button type="button" data-goto="system:sys-profile">About</button>
+			<button type="button" data-goto="system:sys-values">Values</button>
+			<button type="button" data-goto="system:sys-journey">Now</button>
+		</nav>
+
+		<div class="os-topright">
+			<div class="os-hint" aria-hidden="true">
+				<span>Scroll 缩放</span>
+				<i>·</i>
+				<span>Drag 移动画布</span>
+			</div>
+			<button class="os-toggle is-active" id="linkToggle" type="button" aria-pressed="true">连线</button>
+			<a class="os-notes" href="/notes/">知识库</a>
+			<span class="os-clock" id="osClock">--:--</span>
+			<button class="os-help" id="osHelp" type="button" aria-label="操作说明">?</button>
+		</div>
+	</header>
+
+	<div class="os-ticker" aria-hidden="true">
+		<div>
+			{Array.from({ length: 120 }).map(() => <i>✦</i>)}
+		</div>
+	</div>
+
+	<aside class="os-sidebar" aria-label="画布图层">
+		<p class="sidebar-title">✦ Layers</p>
+
+		<div class="sidebar-scroll">
+			{
+				scenes.map((scene) => (
+					<nav data-layers={scene.id} hidden={scene.id !== 'home'} aria-label={`${scene.id} 图层`}>
+						{scene.cards.map((card) => (
+							<button type="button" data-goto={`${scene.id}:${card.id}`}>
+								<i aria-hidden="true" class={`dot tone-${card.tone ?? 'plain'}`} />
+								<span>{card.label}</span>
+							</button>
+						))}
+					</nav>
+				))
+			}
+		</div>
+
+		<button class="sidebar-add" id="sidebarAdd" type="button">
+			<span aria-hidden="true">＋</span> 新建
+		</button>
+
+		<div class="sidebar-minimap">
+			<p>✦ Minimap</p>
+			{
+				scenes.map((scene) => (
+					<div
+						class="minimap"
+						data-minimap={scene.id}
+						hidden={scene.id !== 'home'}
+						style={`--ratio:${(scene.height / scene.width) * 100}%`}
+					>
+						{scene.cards.map((card) => (
+							<i
+								class={`tone-${card.tone ?? 'plain'}`}
+								style={`left:${(card.x / scene.width) * 100}%; top:${(card.y / scene.height) * 100}%; width:${(card.w / scene.width) * 100}%; height:${(estimateHeight(card) / scene.height) * 100}%;`}
+							/>
+						))}
+						<b class="minimap-view" data-minimap-view={scene.id} />
+					</div>
+				))
+			}
+		</div>
+	</aside>
+
+	<main class="os-stage" id="osStage">
+		<div class="os-canvas" id="osCanvas">
+			{
+				scenes.map((scene) => (
+					<section
+						class="os-scene"
+						data-scene={scene.id}
+						data-width={scene.width}
+						data-height={scene.height}
+						hidden={scene.id !== 'home'}
+						style={`width:${scene.width}px; height:${scene.height}px;`}
+						aria-label={`${scene.id} 画布`}
+					>
+						<svg
+							class="scene-links"
+							viewBox={`0 0 ${scene.width} ${scene.height}`}
+							width={scene.width}
+							height={scene.height}
+							aria-hidden="true"
+						>
+							{connectors(scene).map((line) => (
+								<path d={line.d} />
+							))}
+						</svg>
+
+						{scene.cards.map((card) => (
+							<CanvasCard card={card} />
+						))}
+					</section>
+				))
+			}
+		</div>
+	</main>
+
+	<nav class="os-tabs" aria-label="网站视图">
+		{
+			sceneTabs.map((tab) => (
+				<button type="button" class:list={[{ 'is-active': tab.id === 'home' }]} data-view-target={tab.id}>
+					<span>{tab.index}</span>
+					{tab.label}
+				</button>
+			))
+		}
+	</nav>
+
+	<div class="os-zoom">
+		<button type="button" data-zoom="-0.1" aria-label="缩小">−</button>
+		<span id="zoomValue">70%</span>
+		<button type="button" data-zoom="0.1" aria-label="放大">＋</button>
+		<button type="button" id="zoomReset" aria-label="回到全览">⌂</button>
+	</div>
+
+	<footer class="os-footer">
+		<span>© <b id="osYear">2026</b> Happy · Built with AI &amp; curiosity</span>
+		<button type="button" id="backToStart">↑ 回到开始 · Back to Start</button>
+	</footer>
+
+	<AiPartner />
+
+	<div class="os-toast" id="osToast" hidden></div>
+
+	<div class="os-dialog" id="easterDialog" hidden>
+		<div class="dialog-window" role="alertdialog" aria-labelledby="easterTitle">
+			<div class="dialog-icon" aria-hidden="true">⚠️</div>
+			<div>
+				<b id="easterTitle">无法打开 “Ver 3”</b>
+				<p>因为你已经在 Ver 3 里面了。<br />请勿套娃 🙅</p>
+			</div>
+			<button type="button" data-close-dialog="easterDialog">好吧，我知道了</button>
+		</div>
+	</div>
+
+	<div class="os-dialog" id="helpDialog" hidden>
+		<div class="dialog-window wide" role="dialog" aria-labelledby="helpTitle">
+			<div>
+				<b id="helpTitle">画布操作</b>
+				<p>拖动空白处移动画布，滚轮缩放，双击卡片聚焦。</p>
+				<p>快捷键：1 / 2 / 3 切换视图，R 回到全览，＋ － 缩放，Esc 关闭弹窗。</p>
+			</div>
+			<button type="button" data-close-dialog="helpDialog">知道了</button>
+		</div>
+	</div>
+</div>
+
+<script>
+	const app = document.getElementById('osApp');
+	const stage = document.getElementById('osStage');
+	const canvas = document.getElementById('osCanvas');
+	const zoomValue = document.getElementById('zoomValue');
+	const toast = document.getElementById('osToast');
+	const boot = document.getElementById('bootScreen');
+	const views = ['home', 'works', 'system'];
+
+	const state = { view: 'home', scale: 0.7, x: 0, y: 0 };
+	const saved = {};
+	const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+	function activeScene() {
+		return document.querySelector(`[data-scene="${state.view}"]`);
+	}
+
+	function sceneSize() {
+		const scene = activeScene();
+		return {
+			width: Number(scene?.dataset.width || 1600),
+			height: Number(scene?.dataset.height || 900),
+		};
+	}
+
+	function render() {
+		if (!canvas || !stage) return;
+		canvas.style.transform = `translate3d(${state.x}px, ${state.y}px, 0) scale(${state.scale})`;
+		if (zoomValue) zoomValue.textContent = `${Math.round(state.scale * 100)}%`;
+
+		const { width, height } = sceneSize();
+		const box = document.querySelector(`[data-minimap-view="${state.view}"]`);
+		if (box) {
+			const vw = clamp((stage.clientWidth / (width * state.scale)) * 100, 6, 100);
+			const vh = clamp((stage.clientHeight / (height * state.scale)) * 100, 6, 100);
+			box.style.width = `${vw}%`;
+			box.style.height = `${vh}%`;
+			box.style.left = `${clamp((-state.x / (width * state.scale)) * 100, 0, 100 - vw)}%`;
+			box.style.top = `${clamp((-state.y / (height * state.scale)) * 100, 0, 100 - vh)}%`;
+		}
+		saved[state.view] = { scale: state.scale, x: state.x, y: state.y };
+	}
+
+	function fit() {
+		if (!stage) return;
+		const { width, height } = sceneSize();
+		const padding = 90;
+		state.scale = clamp(
+			Math.min((stage.clientWidth - padding) / width, (stage.clientHeight - padding) / height),
+			0.16,
+			1,
+		);
+		state.x = (stage.clientWidth - width * state.scale) / 2;
+		state.y = (stage.clientHeight - height * state.scale) / 2;
+		render();
+	}
+
+	function focusCard(id, zoom) {
+		const node = document.getElementById(id);
+		if (!node || !stage) return;
+		state.scale = clamp(zoom ?? Math.max(state.scale, 0.85), 0.2, 1.6);
+		state.x = stage.clientWidth / 2 - (node.offsetLeft + node.offsetWidth / 2) * state.scale;
+		state.y = stage.clientHeight / 2 - (node.offsetTop + node.offsetHeight / 2) * state.scale;
+		render();
+		node.classList.remove('is-focused');
+		requestAnimationFrame(() => node.classList.add('is-focused'));
+		window.setTimeout(() => node.classList.remove('is-focused'), 1200);
+	}
+
+	function showView(view, { restore = true, updateHash = true } = {}) {
+		if (!views.includes(view)) return;
+		state.view = view;
+		if (app) app.dataset.view = view;
+
+		document.querySelectorAll('[data-scene]').forEach((scene) => {
+			scene.hidden = scene.dataset.scene !== view;
+		});
+		document.querySelectorAll('[data-layers]').forEach((nav) => {
+			nav.hidden = nav.dataset.layers !== view;
+		});
+		document.querySelectorAll('[data-minimap]').forEach((map) => {
+			map.hidden = map.dataset.minimap !== view;
+		});
+		document.querySelectorAll('[data-view-target]').forEach((tab) => {
+			tab.classList.toggle('is-active', tab.dataset.viewTarget === view);
+		});
+
+		if (updateHash && window.location.hash !== `#${view}`) {
+			window.history.replaceState(null, '', `#${view}`);
+		}
+
+		const memory = saved[view];
+		if (restore && memory) {
+			state.scale = memory.scale;
+			state.x = memory.x;
+			state.y = memory.y;
+			render();
+		} else {
+			requestAnimationFrame(fit);
+		}
+	}
+
+	function notify(message) {
+		if (!toast) return;
+		toast.textContent = message;
+		toast.hidden = false;
+		window.clearTimeout(notify.timer);
+		notify.timer = window.setTimeout(() => {
+			toast.hidden = true;
+		}, 2400);
+	}
+
+	/* boot terminal */
+	function runBoot() {
+		if (!boot) return;
+		const lines = Array.from(boot.querySelectorAll('[data-boot-line]'));
+		const launch = document.getElementById('bootLaunch');
+		const cursor = document.getElementById('bootCursor');
+		lines.forEach((line) => line.classList.add('is-hidden'));
+		launch?.classList.add('is-hidden');
+
+		let index = 0;
+		const reveal = () => {
+			if (index >= lines.length) {
+				cursor?.classList.add('is-hidden');
+				launch?.classList.remove('is-hidden');
+				return;
+			}
+			lines[index].classList.remove('is-hidden');
+			index += 1;
+			window.setTimeout(reveal, 260);
+		};
+		window.setTimeout(reveal, 350);
+	}
+
+	function launchOs() {
+		if (!boot || boot.classList.contains('is-gone')) return;
+		boot.classList.add('is-gone');
+		document.body.classList.remove('is-booting');
+		window.setTimeout(() => {
+			boot.hidden = true;
+			fit();
+		}, 620);
+	}
+
+	if (boot) {
+		document.body.classList.add('is-booting');
+		runBoot();
+		document.getElementById('bootLaunch')?.addEventListener('click', launchOs);
+		document.getElementById('bootSkip')?.addEventListener('click', launchOs);
+		boot.addEventListener('click', (event) => {
+			if (event.target === boot) launchOs();
+		});
+	}
+
+	/* navigation */
+	document.querySelectorAll('[data-view-target]').forEach((button) => {
+		button.addEventListener('click', () => showView(button.dataset.viewTarget));
+	});
+
+	document.querySelectorAll('[data-goto]').forEach((button) => {
+		button.addEventListener('click', () => {
+			const [view, cardId] = String(button.dataset.goto).split(':');
+			const exists = document.getElementById(cardId);
+			if (!exists) {
+				notify('这块内容还没搭好');
+				return;
+			}
+			if (view !== state.view) showView(view, { restore: false });
+			window.setTimeout(() => focusCard(cardId), view !== state.view ? 120 : 0);
+		});
+	});
+
+	/* pan and zoom */
+	if (stage) {
+		let dragging = false;
+		let moved = false;
+		let startX = 0;
+		let startY = 0;
+		let originX = 0;
+		let originY = 0;
+
+		stage.addEventListener('pointerdown', (event) => {
+			if (event.target.closest('a, button, input, textarea')) return;
+			dragging = true;
+			moved = false;
+			startX = event.clientX;
+			startY = event.clientY;
+			originX = state.x;
+			originY = state.y;
+			stage.classList.add('is-dragging');
+			stage.setPointerCapture(event.pointerId);
+		});
+
+		stage.addEventListener('pointermove', (event) => {
+			if (!dragging) return;
+			const dx = event.clientX - startX;
+			const dy = event.clientY - startY;
+			if (Math.abs(dx) + Math.abs(dy) > 4) moved = true;
+			state.x = originX + dx;
+			state.y = originY + dy;
+			render();
+		});
+
+		const endDrag = () => {
+			dragging = false;
+			stage.classList.remove('is-dragging');
+		};
+		stage.addEventListener('pointerup', endDrag);
+		stage.addEventListener('pointercancel', endDrag);
+
+		stage.addEventListener('dblclick', (event) => {
+			if (moved) return;
+			const card = event.target.closest('[data-card]');
+			if (card) focusCard(card.id, 1);
+		});
+
+		stage.addEventListener(
+			'wheel',
+			(event) => {
+				event.preventDefault();
+				if (event.shiftKey) {
+					state.x -= event.deltaY;
+					render();
+					return;
+				}
+				const rect = stage.getBoundingClientRect();
+				const pointerX = event.clientX - rect.left;
+				const pointerY = event.clientY - rect.top;
+				const previous = state.scale;
+				state.scale = clamp(state.scale - event.deltaY * 0.0012, 0.16, 1.6);
+				const worldX = (pointerX - state.x) / previous;
+				const worldY = (pointerY - state.y) / previous;
+				state.x = pointerX - worldX * state.scale;
+				state.y = pointerY - worldY * state.scale;
+				render();
+			},
+			{ passive: false },
+		);
+	}
+
+	document.querySelectorAll('[data-zoom]').forEach((button) => {
+		button.addEventListener('click', () => {
+			if (!stage) return;
+			const centerX = stage.clientWidth / 2;
+			const centerY = stage.clientHeight / 2;
+			const previous = state.scale;
+			state.scale = clamp(state.scale + Number(button.dataset.zoom), 0.16, 1.6);
+			const worldX = (centerX - state.x) / previous;
+			const worldY = (centerY - state.y) / previous;
+			state.x = centerX - worldX * state.scale;
+			state.y = centerY - worldY * state.scale;
+			render();
+		});
+	});
+
+	document.getElementById('zoomReset')?.addEventListener('click', fit);
+
+	document.querySelectorAll('[data-minimap]').forEach((map) => {
+		map.addEventListener('click', (event) => {
+			if (!stage) return;
+			const rect = map.getBoundingClientRect();
+			const { width, height } = sceneSize();
+			const ratioX = (event.clientX - rect.left) / rect.width;
+			const ratioY = (event.clientY - rect.top) / rect.height;
+			state.x = stage.clientWidth / 2 - width * ratioX * state.scale;
+			state.y = stage.clientHeight / 2 - height * ratioY * state.scale;
+			render();
+		});
+	});
+
+	/* toggles, dialogs, partner */
+	const linkToggle = document.getElementById('linkToggle');
+	linkToggle?.addEventListener('click', () => {
+		const active = linkToggle.classList.toggle('is-active');
+		linkToggle.setAttribute('aria-pressed', String(active));
+		app?.classList.toggle('hide-links', !active);
+	});
+
+	document.getElementById('sidebarAdd')?.addEventListener('click', () => {
+		notify('新建卡片还没做，先用现有的这些');
+	});
+
+	document.querySelectorAll('[data-open-easter]').forEach((button) => {
+		button.addEventListener('click', () => {
+			const dialog = document.getElementById('easterDialog');
+			if (dialog) dialog.hidden = false;
+		});
+	});
+
+	document.getElementById('osHelp')?.addEventListener('click', () => {
+		const dialog = document.getElementById('helpDialog');
+		if (dialog) dialog.hidden = false;
+	});
+
+	document.querySelectorAll('[data-close-dialog]').forEach((button) => {
+		button.addEventListener('click', () => {
+			const dialog = document.getElementById(String(button.dataset.closeDialog));
+			if (dialog) dialog.hidden = true;
+		});
+	});
+
+	document.querySelectorAll('.os-dialog').forEach((dialog) => {
+		dialog.addEventListener('click', (event) => {
+			if (event.target === dialog) dialog.hidden = true;
+		});
+	});
+
+	const partnerLauncher = document.getElementById('partnerLauncher');
+	const partnerPanel = document.getElementById('partnerPanel');
+
+	function setPartner(open) {
+		if (partnerPanel) partnerPanel.hidden = !open;
+		partnerLauncher?.setAttribute('aria-expanded', String(open));
+	}
+
+	partnerLauncher?.addEventListener('click', () => {
+		setPartner(partnerLauncher.getAttribute('aria-expanded') !== 'true');
+	});
+	document.getElementById('partnerClose')?.addEventListener('click', () => setPartner(false));
+
+	document.querySelectorAll('[data-partner-tab]').forEach((tab) => {
+		tab.addEventListener('click', () => {
+			const target = tab.dataset.partnerTab;
+			document.querySelectorAll('[data-partner-tab]').forEach((other) => {
+				other.classList.toggle('is-active', other === tab);
+			});
+			document.querySelectorAll('[data-partner-view]').forEach((view) => {
+				view.hidden = view.dataset.partnerView !== target;
+			});
+		});
+	});
+
+	document.getElementById('backToStart')?.addEventListener('click', () => {
+		if (!boot) return;
+		boot.hidden = false;
+		boot.classList.remove('is-gone');
+		document.body.classList.add('is-booting');
+		runBoot();
+	});
+
+	/* clock and keyboard */
+	function tick() {
+		const clock = document.getElementById('osClock');
+		if (clock) {
+			clock.textContent = new Date().toLocaleTimeString('zh-CN', {
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false,
+			});
+		}
+	}
+	tick();
+	window.setInterval(tick, 30000);
+
+	const year = document.getElementById('osYear');
+	if (year) year.textContent = String(new Date().getFullYear());
+
+	document.addEventListener('keydown', (event) => {
+		if (event.target instanceof HTMLElement && event.target.matches('input, textarea')) return;
+
+		if (boot && !boot.hidden && !boot.classList.contains('is-gone')) {
+			if (event.key === 'Enter' || event.key === ' ') {
+				event.preventDefault();
+				launchOs();
+			}
+			return;
+		}
+
+		if (event.key === 'Escape') {
+			document.querySelectorAll('.os-dialog').forEach((dialog) => {
+				dialog.hidden = true;
+			});
+			setPartner(false);
+			return;
+		}
+		if (event.key === '1') showView('home');
+		if (event.key === '2') showView('works');
+		if (event.key === '3') showView('system');
+		if (event.key.toLowerCase() === 'r') fit();
+		if (event.key === '+' || event.key === '=') {
+			state.scale = clamp(state.scale + 0.1, 0.16, 1.6);
+			render();
+		}
+		if (event.key === '-') {
+			state.scale = clamp(state.scale - 0.1, 0.16, 1.6);
+			render();
+		}
+	});
+
+	window.addEventListener('resize', () => {
+		if (!saved[state.view]) fit();
+		else render();
+	});
+
+	window.addEventListener('hashchange', () => {
+		const view = window.location.hash.replace('#', '');
+		if (views.includes(view)) showView(view, { updateHash: false });
+	});
+
+	const initial = window.location.hash.replace('#', '');
+	showView(views.includes(initial) ? initial : 'home', { restore: false, updateHash: false });
+	if (initial && views.includes(initial)) launchOs();
+</script>
