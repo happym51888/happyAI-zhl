@@ -40,7 +40,7 @@ Evaluation、Tracing、成本、权限和 Prompt Injection 防护贯穿整个系
 
 ## 建议阅读
 
-1. [LLM 基础](/llm/)
-2. [RAG 与知识检索](/rag/)
-3. [AI Agent](/agent/)
-4. [AI Agent 全景图](/projects/ai-agent-whole-picture/)
+1. [LLM 基础](../llm/)
+2. [RAG 与知识检索](../rag/)
+3. [AI Agent](../agent/)
+4. [AI Agent 全景图](../projects/ai-agent-whole-picture/)

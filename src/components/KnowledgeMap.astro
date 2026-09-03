@@ -1,3 +1,7 @@
+---
+import { withBase } from '../lib/base';
+---
+
 <div class="knowledge-map" aria-label="AI Agent 知识关系图">
 	<section class="layer application">
 		<header>
@@ -5,17 +9,17 @@
 			<span>Application</span>
 		</header>
 		<div class="flow">
-			<a class="node" href="/learning-path/">
+			<a class="node" href={withBase('/learning-path/')}>
 				<b>Python 应用</b>
 				<small>实现业务逻辑</small>
 			</a>
 			<i aria-hidden="true">→</i>
-			<a class="node" href="/ai-basics/">
+			<a class="node" href={withBase('/ai-basics/')}>
 				<b>HTTP API</b>
 				<small>调用模型与服务</small>
 			</a>
 			<i aria-hidden="true">→</i>
-			<a class="node" href="/ai-basics/">
+			<a class="node" href={withBase('/ai-basics/')}>
 				<b>JSON</b>
 				<small>承载消息与参数</small>
 			</a>
@@ -30,24 +34,24 @@
 			<span>Model</span>
 		</header>
 		<div class="flow">
-			<a class="node support" href="/llm/">
+			<a class="node support" href={withBase('/llm/')}>
 				<b>Token + 上下文窗口</b>
 				<small>容量与成本边界</small>
 			</a>
 			<i aria-hidden="true">→</i>
-			<a class="node" href="/llm/">
+			<a class="node" href={withBase('/llm/')}>
 				<b>Prompt</b>
 				<small>指令 + 问题 + 上下文</small>
 			</a>
 			<i aria-hidden="true">→</i>
-			<a class="node core" href="/llm/">
+			<a class="node core" href={withBase('/llm/')}>
 				<b>LLM</b>
 				<small>理解 · 推断 · 生成</small>
 			</a>
 			<i aria-hidden="true">→</i>
 			<div class="split">
-				<a class="node" href="/llm/">结构化输出</a>
-				<a class="node" href="/llm/">Tool Calling</a>
+				<a class="node" href={withBase('/llm/')}>结构化输出</a>
+				<a class="node" href={withBase('/llm/')}>Tool Calling</a>
 			</div>
 		</div>
 	</section>
@@ -60,17 +64,17 @@
 			<span>RAG</span>
 		</header>
 		<div class="flow long">
-			<a class="node" href="/rag/">外部文档</a>
+			<a class="node" href={withBase('/rag/')}>外部文档</a>
 			<i aria-hidden="true">→</i>
-			<a class="node" href="/rag/">Chunking</a>
+			<a class="node" href={withBase('/rag/')}>Chunking</a>
 			<i aria-hidden="true">→</i>
-			<a class="node" href="/rag/">Embedding</a>
+			<a class="node" href={withBase('/rag/')}>Embedding</a>
 			<i aria-hidden="true">→</i>
-			<a class="node" href="/rag/">向量检索</a>
+			<a class="node" href={withBase('/rag/')}>向量检索</a>
 			<i aria-hidden="true">→</i>
-			<a class="node" href="/rag/">Reranking</a>
+			<a class="node" href={withBase('/rag/')}>Reranking</a>
 			<i aria-hidden="true">→</i>
-			<a class="node core" href="/rag/">相关知识进入 Prompt</a>
+			<a class="node core" href={withBase('/rag/')}>相关知识进入 Prompt</a>
 		</div>
 		<p class="relationship">RAG 给 LLM 提供外部知识，也可以被 Agent 当作一个检索工具。</p>
 	</section>
@@ -84,19 +88,19 @@
 		</header>
 		<div class="agent-layout">
 			<div class="cycle">
-				<a class="node core" href="/agent/">Agent</a>
+				<a class="node core" href={withBase('/agent/')}>Agent</a>
 				<i aria-hidden="true">→</i>
-				<a class="node" href="/agent/">Planning</a>
+				<a class="node" href={withBase('/agent/')}>Planning</a>
 				<i aria-hidden="true">→</i>
-				<a class="node" href="/agent/">工具</a>
+				<a class="node" href={withBase('/agent/')}>工具</a>
 				<i aria-hidden="true">→</i>
-				<a class="node" href="/agent/">Observation</a>
+				<a class="node" href={withBase('/agent/')}>Observation</a>
 				<i class="return" aria-hidden="true">↩</i>
 			</div>
 			<div class="supports">
-				<a class="node" href="/agent/">Memory</a>
-				<a class="node" href="/agent/">State</a>
-				<a class="node" href="/agent/">Human-in-the-loop</a>
+				<a class="node" href={withBase('/agent/')}>Memory</a>
+				<a class="node" href={withBase('/agent/')}>State</a>
+				<a class="node" href={withBase('/agent/')}>Human-in-the-loop</a>
 			</div>
 		</div>
 	</section>
@@ -110,11 +114,11 @@
 				<span>Frameworks</span>
 			</header>
 			<div class="compact-flow">
-				<a class="node" href="/frameworks/">
+				<a class="node" href={withBase('/frameworks/')}>
 					<b>LangChain</b>
 					<small>组装模型、RAG 与工具</small>
 				</a>
-				<a class="node" href="/frameworks/">
+				<a class="node" href={withBase('/frameworks/')}>
 					<b>LangGraph</b>
 					<small>管理状态、循环与审核</small>
 				</a>
@@ -127,11 +131,11 @@
 				<span>Production</span>
 			</header>
 			<div class="chips">
-				<a href="/production/">Evaluation</a>
-				<a href="/production/">Tracing</a>
-				<a href="/production/">成本</a>
-				<a href="/production/">权限</a>
-				<a href="/production/">Prompt Injection 防护</a>
+				<a href={withBase('/production/')}>Evaluation</a>
+				<a href={withBase('/production/')}>Tracing</a>
+				<a href={withBase('/production/')}>成本</a>
+				<a href={withBase('/production/')}>权限</a>
+				<a href={withBase('/production/')}>Prompt Injection 防护</a>
 			</div>
 		</section>
 	</div>

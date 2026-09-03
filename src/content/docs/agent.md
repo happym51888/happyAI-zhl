@@ -60,4 +60,4 @@ description: 工具、规划、Observation、记忆、状态与 Human-in-the-loo
 
 Agent 会增加延迟、成本和不确定性，因此应从能够完成任务的最简单方案开始。
 
-下一步：[了解 LangChain 与 LangGraph](/frameworks/)。
+下一步：[了解 LangChain 与 LangGraph](../frameworks/)。

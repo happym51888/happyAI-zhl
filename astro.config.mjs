@@ -2,9 +2,13 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
+const base = process.env.SITE_BASE || undefined;
+const site = process.env.SITE_ORIGIN || 'https://happyai-zhl.pages.dev';
+
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://happyai-zhl.pages.dev',
+	site,
+	base,
 	integrations: [
 		starlight({
 			title: 'HappyAI · ZHL',

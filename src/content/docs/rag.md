@@ -56,4 +56,4 @@ description: Chunking、Embedding、向量检索和 Reranking 如何组成 RAG�
 
 ## RAG 与 Agent
 
-普通 RAG 会在每次回答前固定执行检索，而 Agentic RAG 可以让 [Agent](/agent/) 判断是否需要检索、选择哪个知识源，并在结果不足时修改查询后再次搜索。
+普通 RAG 会在每次回答前固定执行检索，而 Agentic RAG 可以让 [Agent](../agent/) 判断是否需要检索、选择哪个知识源，并在结果不足时修改查询后再次搜索。

@@ -1,8 +1,10 @@
 ---
 import OsShell from '../components/os/OsShell.astro';
+import { withBase } from '../lib/base';
 
-const site = 'https://happyai-zhl.pages.dev';
 const description = 'Happy 的个人 AI 系统：终端开机、无限画布、学习笔记与作品集。1 person + AI = 1 team.';
+const pageUrl = new URL(withBase('/'), Astro.site).href;
+const ogImage = new URL(withBase('/images/happy-character-blue-yellow.png'), Astro.site).href;
 ---
 
 <!doctype html>
@@ -15,10 +17,10 @@ const description = 'Happy 的个人 AI 系统：终端开机、无限画布、�
 		<meta property="og:title" content="Happy OS · 1 person + AI = 1 team" />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content={`${site}/`} />
-		<meta property="og:image" content={`${site}/images/happy-character-blue-yellow.png`} />
-		<link rel="canonical" href={`${site}/`} />
-		<link rel="icon" href="/favicon.svg" />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:image" content={ogImage} />
+		<link rel="canonical" href={pageUrl} />
+		<link rel="icon" href={withBase('/favicon.svg')} />
 		<title>Happy OS — 1 person + AI = 1 team</title>
 	</head>
 

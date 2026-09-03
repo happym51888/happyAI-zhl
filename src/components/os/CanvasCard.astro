@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/base';
 import type { Card } from './cards';
 
 interface Props {
@@ -8,6 +9,8 @@ interface Props {
 const { card } = Astro.props;
 const tone = card.tone ?? 'plain';
 const isInternal = card.href?.startsWith('/') || card.href?.startsWith('#');
+const href = card.href ? withBase(card.href) : undefined;
+const portrait = withBase('/images/happy-character-blue-yellow.png');
 ---
 
 <article
@@ -22,7 +25,7 @@ const isInternal = card.href?.startsWith('/') || card.href?.startsWith('#');
 	{
 		card.kind === 'hero' && (
 			<div class="hero-card">
-				<img class="hero-avatar" src="/images/happy-character-blue-yellow.png" alt="Happy 的个人形象插画" />
+				<img class="hero-avatar" src={portrait} alt="Happy 的个人形象插画" />
 				<p class="eyebrow">{card.eyebrow}</p>
 				<h2 class="hero-name">{card.heading}</h2>
 				<p class="card-body">{card.body}</p>
@@ -37,7 +40,7 @@ const isInternal = card.href?.startsWith('/') || card.href?.startsWith('#');
 		card.kind === 'photo' && (
 			<div class="photo-card">
 				<span class="photo-tag">HAPPY / CHARACTER</span>
-				<img src="/images/happy-character-blue-yellow.png" alt="Happy 的蓝黄手绘形象" />
+				<img src={portrait} alt="Happy 的蓝黄手绘形象" />
 				<span class="photo-caption">AI learner &amp; builder</span>
 			</div>
 		)
@@ -49,8 +52,8 @@ const isInternal = card.href?.startsWith('/') || card.href?.startsWith('#');
 				<p class="eyebrow">{card.eyebrow}</p>
 				<h2 class="card-title">{card.heading}</h2>
 				<p class="card-body">{card.body}</p>
-				{card.href ? (
-					<a class="card-link" href={card.href} rel={isInternal ? undefined : 'noreferrer'}>
+				{href ? (
+					<a class="card-link" href={href} rel={isInternal ? undefined : 'noreferrer'}>
 						{card.cta} <b aria-hidden="true">↗</b>
 					</a>
 				) : (
@@ -69,8 +72,8 @@ const isInternal = card.href?.startsWith('/') || card.href?.startsWith('#');
 					{card.items?.map((item) => <li>{item}</li>)}
 				</ul>
 				{card.body && <p class="card-body">{card.body}</p>}
-				{card.href && (
-					<a class="card-link" href={card.href}>
+				{href && (
+					<a class="card-link" href={href}>
 						{card.cta} <b aria-hidden="true">↗</b>
 					</a>
 				)}
@@ -170,7 +173,7 @@ const isInternal = card.href?.startsWith('/') || card.href?.startsWith('#');
 						<button type="button" data-open-easter>打开</button>
 					</li>
 				</ol>
-				<a class="card-link" href="/notes/">Playground <b aria-hidden="true">↗</b></a>
+				<a class="card-link" href={withBase('/notes/')}>Playground <b aria-hidden="true">↗</b></a>
 			</div>
 		)
 	}
