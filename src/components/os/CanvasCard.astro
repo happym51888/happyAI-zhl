@@ -10,7 +10,7 @@ const { card } = Astro.props;
 const tone = card.tone ?? 'plain';
 const isInternal = card.href?.startsWith('/') || card.href?.startsWith('#');
 const href = card.href ? withBase(card.href) : undefined;
-const portrait = withBase('/images/happy-character-blue-yellow.png');
+const portrait = withBase('/images/happy-character.webp');
 ---
 
 <article
