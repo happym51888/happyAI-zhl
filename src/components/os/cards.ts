@@ -29,6 +29,8 @@ export type Card = {
 	quote?: string;
 	source?: string;
 	cover?: string;
+	image?: string;
+	imageAlt?: string;
 	status?: string;
 	number?: string;
 };
@@ -161,7 +163,7 @@ export const homeScene: Scene = {
 			tone: 'green',
 			eyebrow: 'BUILD',
 			heading: '建站与部署',
-			items: ['Astro 生成静态站', 'GitHub 存源码', 'Cloudflare 自动部署'],
+			items: ['Astro 生成静态站', 'GitHub 存源码', 'GitHub Actions 自动部署到 Pages'],
 			body: '这个网站就是这么跑起来的。',
 		},
 		{
@@ -237,6 +239,20 @@ export const homeScene: Scene = {
 			w: 380,
 			tone: 'plain',
 		},
+		{
+			id: 'home-registerkb',
+			label: '代表作 · RegisterKB',
+			kind: 'link',
+			x: 2170,
+			y: 960,
+			w: 300,
+			tone: 'pink',
+			eyebrow: '代表作',
+			heading: 'RegisterKB',
+			body: '团队共享大脑：查证据、受控执行、成功经验沉淀成 skill。',
+			cta: '看案例',
+			href: '/projects/registerkb/',
+		},
 	],
 	links: [
 		['home-hero', 'home-story'],
@@ -252,6 +268,7 @@ export const homeScene: Scene = {
 		['home-deploy', 'home-motto'],
 		['home-board', 'home-work'],
 		['home-better', 'home-outro'],
+		['home-better', 'home-registerkb'],
 	],
 };
 
@@ -276,17 +293,22 @@ export const worksScene: Scene = {
 		},
 		{
 			id: 'works-02',
-			label: 'dim_02 工具与 Skill',
+			label: 'dim_02 RegisterKB',
 			kind: 'project',
-			number: 'dim_02',
-			status: '整理中',
+			number: 'dim_02 · 工具与 Skill',
+			status: '代表作',
 			x: 600,
-			y: 130,
-			w: 340,
+			y: 110,
+			w: 350,
 			tone: 'blue',
-			heading: '工具与 Skill',
-			body: '自己写的小工具、Agent Skill 和自动化流程。',
-			cover: 'TOOLS',
+			heading: 'RegisterKB · 团队共享大脑',
+			body: '把核心网安装排障经验变成可复用的 skill：先查证据，再受控执行，成功后沉淀。',
+			cover: 'RegisterKB',
+			image: '/images/registerkb/cover.webp',
+			imageAlt: '漫画：工程师把问题交给 RegisterKB',
+			tags: ['Python', 'SQLite FTS5', 'Human-in-the-loop'],
+			cta: '查看案例',
+			href: '/projects/registerkb/',
 		},
 		{
 			id: 'works-03',
@@ -575,6 +597,7 @@ const heightByKind: Record<Card['kind'], number> = {
 };
 
 export function estimateHeight(card: Card): number {
+	if (card.kind === 'project' && card.href) return 440;
 	return heightByKind[card.kind] ?? 200;
 }
 

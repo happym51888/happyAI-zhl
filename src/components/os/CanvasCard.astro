@@ -203,11 +203,17 @@ const portrait = withBase('/images/happy-character.webp');
 	{
 		card.kind === 'project' && (
 			<div class="project-card">
-				<div class="project-cover" aria-hidden="true">
-					<span>{card.number}</span>
-					<strong>{card.cover}</strong>
-					<i></i><i></i>
-				</div>
+				{card.image ? (
+					<div class="project-cover has-image">
+						<img src={withBase(card.image)} alt={card.imageAlt ?? ''} loading="lazy" draggable="false" />
+					</div>
+				) : (
+					<div class="project-cover" aria-hidden="true">
+						<span>{card.number}</span>
+						<strong>{card.cover}</strong>
+						<i></i><i></i>
+					</div>
+				)}
 				<div class="project-copy">
 					<div class="project-meta">
 						<span>{card.number}</span>
@@ -215,6 +221,16 @@ const portrait = withBase('/images/happy-character.webp');
 					</div>
 					<h2 class="card-title">{card.heading}</h2>
 					<p class="card-body">{card.body}</p>
+					{card.tags && (
+						<ul class="chips project-tags">
+							{card.tags.map((tag) => <li>{tag}</li>)}
+						</ul>
+					)}
+					{href && (
+						<a class="card-link" href={href}>
+							{card.cta} <b aria-hidden="true">↗</b>
+						</a>
+					)}
 				</div>
 			</div>
 		)
