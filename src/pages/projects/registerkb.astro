@@ -2,46 +2,32 @@
 import '../../components/case/case.css';
 import { withBase } from '../../lib/base';
 
-const title = 'RegisterKB · 团队共享大脑 — Happy OS';
+const title = 'RegisterKB · 团队 AI 工作助手 — Happy OS';
 const description =
-	'RegisterKB：把通信核心网的安装排障经验变成可复用 skill 的团队知识助手。先查证据，再受控执行，成功后沉淀。';
+	'RegisterKB：我带团队做的部门 AI 工作助手。混合检索找证据，LangGraph Agent 生成步骤、人审批后执行，成功经验沉淀成 Skill。约 60 人在用。';
 const pageUrl = new URL(withBase('/projects/registerkb/'), Astro.site).href;
 const ogImage = new URL(withBase('/images/registerkb/og.jpg'), Astro.site).href;
 const img = (name: string) => withBase(`/images/registerkb/${name}.webp`);
 const worksHref = withBase('/#works');
 
 const meta = [
-	{ label: '时间', value: '2026' },
-	{ label: '角色', value: '从想法到落地' },
-	{ label: '形态', value: '本地 Web · Cursor · CLI' },
-	{ label: '状态', value: '核心闭环已跑通' },
+	{ label: '角色', value: '团队负责人：架构、核心代码、验收' },
+	{ label: '状态', value: '部门内约 60 人在用' },
 ];
 
-const stack = ['Python', 'SQLite FTS5', 'BM25', 'Cursor Agent', 'Human-in-the-loop', 'Guarded SSH'];
+const stack = ['Python', 'LangGraph', 'BM25 + BGE-M3', 'RRF', 'MCP', 'Human-in-the-loop'];
 
 const metrics = [
-	{ value: '约 5000', unit: '篇', label: '文档去重后入库', tone: 'blue' },
-	{ value: '约 2.5 万', unit: '个', label: '证据片段，每段可回链原文', tone: 'yellow' },
-	{ value: '5', unit: '步', label: '从查证据到写回的受控闭环', tone: 'pink' },
-	{ value: '12', unit: '个', label: 'pytest 测试文件', tone: 'green' },
+	{ value: '5000+', unit: '篇', label: '内部文档入库，按页面 ID 去重', tone: 'blue' },
+	{ value: '约 2.5 万', unit: '块', label: '证据块，标注模块、版本、可信度', tone: 'yellow' },
+	{ value: '95%', unit: 'Top-3', label: '24 条真实问题评测，原来 79.2%', tone: 'pink' },
+	{ value: '≈60', unit: '人', label: '部门内在用', tone: 'green' },
 ];
 
 const pains = [
-	{
-		tone: 'yellow',
-		title: '对的页面难找',
-		body: '一个安装问题背后是一串内部文档链接，只能一页页点开，先看懂再动手。',
-	},
-	{
-		tone: 'pink',
-		title: '文档到命令要靠人翻译',
-		body: '文档里的命令只是示例，版本号、副本数、namespace 都得按当前环境自己改。',
-	},
-	{
-		tone: 'blue',
-		title: '装好了，经验也散了',
-		body: '这次踩过的坑、改过的参数留在个人笔记里，下一个人还要从头来一遍。',
-	},
+	{ tone: 'yellow', title: '对的页面难找', body: '几千篇文档，不同版本、不同环境的步骤还不一样。' },
+	{ tone: 'pink', title: '文档到命令靠人翻译', body: '示例命令要按当前环境自己改，费时又容易出错。' },
+	{ tone: 'blue', title: '装好了，经验也散了', body: '踩过的坑留在个人笔记里，下一个人从头再来。' },
 ];
 
 const lanes = [
@@ -56,11 +42,11 @@ const steps = [
 		no: '01',
 		tone: 'blue',
 		title: '搜索',
-		short: '一句话提问，返回 3–5 个候选来源',
+		short: '混合检索，返回 3–5 个带出处的来源',
 		detail: [
-			'在 Cursor 或网页里说一句“用 RegisterKB 查 testclient 怎么装”。',
-			'/api/answer 在本地索引里检索，按相关度给出 3–5 个可点开的原文链接。',
-			'每个候选都标出分数，以及有没有可以直接复用的 skill。',
+			'在 Cursor 或网页里说一句“testclient 怎么装”。',
+			'BM25 负责精确匹配命令和错误码，BGE-M3 向量负责匹配换了说法的问题，两路用 RRF 融合。',
+			'返回原文片段和出处链接，并标出有没有可复用的 Skill。',
 		],
 		rule: '这一步只检索、只总结，不做任何操作。',
 	},
@@ -69,11 +55,11 @@ const steps = [
 		no: '02',
 		tone: 'blue',
 		title: '选择证据',
-		short: '人来勾选可信来源，只学被选中的',
+		short: '人勾选可信来源，只学被选中的',
 		detail: [
 			'弹出多选框 C1 / C2 / C3，由人判断哪些页面靠谱。',
-			'系统只学习被勾选的页面；页面里链到的子页面如果已在本地索引，会跟着一起学。',
-			'没索引的链接和二进制附件不硬猜，单独列成“缺口”。',
+			'子页面如果已在本地索引，会跟着一起学。',
+			'没索引的链接和附件不硬猜，单独列成“缺口”。',
 		],
 		rule: '没有人工勾选，就不开始学习。',
 	},
@@ -82,11 +68,11 @@ const steps = [
 		no: '03',
 		tone: 'yellow',
 		title: '生成计划',
-		short: '学到什么、没学到什么，再出 runbook',
+		short: '学到什么、缺什么，再出 runbook',
 		detail: [
-			'先汇报：学到了哪些内容，哪些地方还是空白。',
+			'先汇报学到了哪些内容，哪些地方还是空白。',
 			'生成 runbook，每一步带 precheck、backup 和 validation。',
-			'然后停下来，等人确认计划。',
+			'LangGraph 状态图在审批节点中断，等人确认。',
 		],
 		rule: '计划没确认，不进入执行。',
 	},
@@ -95,13 +81,13 @@ const steps = [
 		no: '04',
 		tone: 'yellow',
 		title: '受控执行',
-		short: '白名单 + approval token + 日志脱敏',
+		short: '允许名单 + approval token + 脱敏',
 		detail: [
-			'remote-executor-plan 先给每条命令标上 allow 或 block。',
-			'approval token 由目标环境和命令列表一起算出，必须人工输入才能执行。',
-			'stdout / stderr 脱敏之后写进 execution log。',
+			'每条命令先标 allow 或 block，危险命令直接拦下。',
+			'approval token 由目标环境和命令列表算出，人工输入才执行。',
+			'出错即停，输出脱敏后写进执行日志。',
 		],
-		rule: '白名单之外的命令一律不跑，删除、卸载、sudo 和命令串联直接拦下。',
+		rule: '名单之外的命令一律不跑。',
 	},
 	{
 		id: 'writeback',
@@ -110,76 +96,27 @@ const steps = [
 		title: '成功沉淀',
 		short: '成功后先挂起，人选了才写回',
 		detail: [
-			'执行成功的记录进入 skill_writebacks = pending，同时生成 skill 草稿。',
-			'问用户三选一：写回默认页面 / 不写回 / 写回指定页面。',
-			'写回只追加到页面末尾，不覆盖原有内容。',
+			'执行成功后自动生成 Skill 草稿，状态是 pending。',
+			'人工审核后选择：写回默认页面 / 不写回 / 写回指定页面。',
+			'写回只追加，不覆盖原有内容。',
 		],
-		rule: 'pending 状态不会自动发布；失败或不确定的执行不会变成 skill。',
+		rule: 'pending 不会自动发布；失败的执行不会变成 Skill。',
 	},
 ];
 
 const layers = [
-	{ tone: 'blue', name: '入口层', tech: 'Cursor Chat · Web UI · CLI', note: '自然语言提问、浏览器演示、后台任务' },
-	{
-		tone: 'violet',
-		name: 'API 层',
-		tech: 'Python http.server',
-		note: '/api/answer · learning-workflows · runbook · remote-executor · writeback',
-	},
-	{ tone: 'green', name: '知识层', tech: 'SQLite + FTS5 / BM25', note: 'documents · chunks · chunks_fts · page_meta' },
-	{ tone: 'yellow', name: '执行层', tech: 'Remote Executor', note: 'ssh · allowlist / denylist · approval token · 脱敏' },
-	{
-		tone: 'pink',
-		name: '沉淀层',
-		tech: '执行记录 + 写回状态机',
-		note: 'execution_runs · execution_steps · skill_writebacks',
-	},
-	{ tone: 'blue', name: '外部系统', tech: 'Confluence REST API', note: '只追加到 skill 页面，不覆盖原内容' },
-];
-
-const stackGroups = [
-	{ tone: 'green', title: '检索', items: ['SQLite FTS5 + BM25', '按模块、置信度、标题加权', '每条结果回链原文'] },
-	{ tone: 'blue', title: '学习工作流', items: ['learning_workflows 表', '人工选择 selected_items', '已索引子页面跟随学习'] },
-	{ tone: 'yellow', title: '执行', items: ['ssh，优先 key / agent', 'allowlist + denylist', 'token = 目标 + 命令的哈希'] },
-	{ tone: 'pink', title: '安全', items: ['密码只在会话里用', '日志 / DB / skill 不存密码', '输出按正则脱敏'] },
-	{ tone: 'violet', title: '沉淀', items: ['execution_runs / steps', 'skill_writebacks 状态机', 'Markdown 追加写回'] },
-	{ tone: 'blue', title: '运维', items: ['PowerShell 脚本', 'Windows 任务计划定时刷新', '默认 dry-run'] },
+	{ tone: 'blue', name: '入口', tech: 'Cursor 对话 · Web UI · CLI', note: '通过 HTTP API 和 MCP 接入 Cursor' },
+	{ tone: 'violet', name: '编排', tech: 'LangGraph 状态图', note: '学习来源 → 生成计划 → 人工审批 → SSH 执行 → 写回 Skill' },
+	{ tone: 'green', name: '检索', tech: 'BM25 + BGE-M3 + RRF', note: 'SQLite FTS5 精确匹配 · 向量匹配换了说法的问题 · 融合排序' },
+	{ tone: 'yellow', name: '执行', tech: 'Remote Executor', note: '允许 / 禁止名单 · approval token · 出错即停 · 输出脱敏' },
+	{ tone: 'pink', name: '沉淀', tech: '执行日志 + 写回状态机', note: 'execution_runs · skill_writebacks · 人选了才发布' },
 ];
 
 const safety = [
-	{
-		tone: 'yellow',
-		tag: 'EXECUTOR',
-		title: '远程执行',
-		items: [
-			'先出计划，每条命令标 allow / block',
-			'rm -rf、delete、uninstall、sudo、命令串联一律拦截',
-			'approval token 必须和当前目标、命令完全对得上',
-			'临时密码只在本次会话里用，不落盘',
-		],
-	},
-	{
-		tone: 'green',
-		tag: 'STATE MACHINE',
-		title: '写回状态机',
-		items: [
-			'成功运行先进入 pending',
-			'用户选 default / skip / custom 之后才动',
-			'done 防止重复写，failed 记下 last_error',
-			'pending 永远不会自动发布',
-		],
-	},
-	{
-		tone: 'violet',
-		tag: 'MONITOR',
-		title: '对话兜底监控',
-		items: [
-			'只看用过 RegisterKB 的对话',
-			'必须有运行证据：Pod Running 1/1、Helm deployed',
-			'同一个 namespace + release 只记一次',
-			'只做兜底，不替代 execution log',
-		],
-	},
+	'rm -rf、delete、uninstall、sudo 和命令串联，计划阶段直接拦下',
+	'approval token 必须和当前目标、命令完全对得上',
+	'密码只在本次会话里用，日志、数据库、Skill 都不存',
+	'执行日志全程留痕，出问题能追溯',
 ];
 
 const termLines = [
@@ -188,11 +125,9 @@ const termLines = [
 	{ kind: 'out', text: 'C1  TestClient 安装指南        0.92  ★ 有可复用 skill' },
 	{ kind: 'out', text: 'C2  Helm chart 参数说明        0.81' },
 	{ kind: 'out', text: 'C3  namespace 与权限准备       0.77' },
-	{ kind: 'out', text: 'C4  常见安装报错排查           0.64' },
 	{ kind: 'kb', text: '我只学习你勾选的来源，请选择：' },
 	{ kind: 'you', text: 'C1, C3' },
-	{ kind: 'kb', text: '已学习 2 个来源，跟随学习 1 个已索引子页面' },
-	{ kind: 'dim', text: '缺口：1 个附件未索引，没有猜它的内容' },
+	{ kind: 'kb', text: '已学习 2 个来源；缺口：1 个附件未索引，没有猜它的内容' },
 	{ kind: 'kb', text: 'Runbook：precheck → backup → install → validate，等你确认' },
 	{ kind: 'you', text: '确认' },
 	{ kind: 'kb', text: 'remote-executor-plan' },
@@ -201,82 +136,28 @@ const termLines = [
 	{ kind: 'block', text: '✗ block  rm -rf /tmp/old-chart    删除类命令' },
 	{ kind: 'kb', text: '请输入 approval token：' },
 	{ kind: 'you', text: '••••-••••' },
-	{ kind: 'kb', text: '执行完成，输出已脱敏写入 execution log' },
+	{ kind: 'kb', text: '执行完成，输出已脱敏写入执行日志' },
 	{ kind: 'out', text: 'testclient-7b6f9   1/1   Running   0   2m' },
-	{ kind: 'kb', text: '成功 → skill_writebacks = pending。要写回吗？' },
-	{ kind: 'out', text: '1 写回默认页面   2 不写回   3 写回指定页面' },
-	{ kind: 'you', text: '1' },
-	{ kind: 'kb', text: '已追加到 skill 页面。下次再问，直接复用这份 runbook ✓' },
+	{ kind: 'kb', text: '成功 → Skill 草稿已生成（pending）。要写回吗？' },
+	{ kind: 'you', text: '1  写回默认页面' },
+	{ kind: 'kb', text: '已追加。下次再问，直接复用这份 runbook ✓' },
 ];
 
-const demoSteps = [
-	{ title: '提问', note: '一句自然语言，不用记命令' },
-	{ title: '勾选来源', note: '人挑证据，系统只学被选中的' },
-	{ title: '确认计划', note: '先看清学到了什么、缺什么' },
-	{ title: '审批执行', note: '危险命令被拦下，token 人工输入' },
-	{ title: '选择写回', note: '成功经验变成下一次的 skill' },
+const results = [
+	'部门内推广，约 60 人在用',
+	'沉淀了一批 Skill，覆盖云平台集群安装部署、特性验证和回归测试',
+	'同类任务直接调用 Skill，不用再查资料试错',
+	'24 条真实问题评测，Top-3 命中率从 79.2% 提升到 95%',
 ];
 
-const engineering = [
-	{
-		tone: 'green',
-		tag: 'SEARCH',
-		title: '检索不会挂',
-		body: 'FTS5 + BM25 排序之后，再叠加模块、置信度和标题加权。FTS 索引缺失时自动退回 LIKE 扫描。',
-		lesson: false,
-	},
-	{
-		tone: 'blue',
-		tag: 'DEDUPE',
-		title: '同一篇文档只留一份',
-		body: '同一页常有正文、索引页、附件几份副本。入库前按页面 ID、路径、标题算唯一键，优先留带链接的正文和更新的那份。',
-		lesson: false,
-	},
-	{
-		tone: 'violet',
-		tag: 'REFRESH',
-		title: '周一刷新，失败才周二补跑',
-		body: '每周一 11:30 自动重新入库、重建索引，结果写进状态文件；周二 10:00 检查一次，周一已成功就跳过。',
-		lesson: false,
-	},
-	{
-		tone: 'pink',
-		tag: 'TESTS',
-		title: '12 个测试文件',
-		body: '覆盖分类、去重、入库、检索增强、学习流程、runbook 与远程执行、skill 注册表和向量检索。',
-		lesson: false,
-	},
-	{
-		tone: 'yellow',
-		tag: 'LESSON',
-		title: '一次真实的坑',
-		body: '有一周周一的任务触发了，但脚本路径的引号写坏了，根本没跑起来。修好命令之后，才补上了周二的条件补跑。',
-		lesson: true,
-	},
-	{
-		tone: 'blue',
-		tag: 'ENTRY',
-		title: 'MCP 不是必须的',
-		body: '公司环境不一定允许 MCP，所以同一套能力同时暴露成本地 Web API、Cursor 规则和 CLI，哪条路通走哪条。',
-		lesson: false,
-	},
-];
-
-const roadmap = [
-	{ tone: 'violet', title: 'Dream 学习日志', body: '空闲时分析 execution log，把重复多、价值高的操作自动总结成 skill 草稿。' },
-	{ tone: 'pink', title: 'RBAC 权限', body: '按用户和角色限制搜索、执行、写回，区分只读、执行和发布权限。' },
-	{ tone: 'blue', title: 'Skill Mesh 集成', body: '把团队其他地方发布的 skill 也纳入检索和复用。' },
-	{ tone: 'green', title: 'Jira 集成', body: '从问题单里总结可复用的 debug 经验。' },
-];
+const roadmap = ['Dream 学习日志', 'RBAC 权限', 'Skill Mesh 集成', 'Jira 集成'];
 
 const nav = [
 	{ href: '#problem', label: '问题' },
 	{ href: '#flow', label: '流程' },
 	{ href: '#architecture', label: '架构' },
-	{ href: '#safety', label: '安全' },
 	{ href: '#demo', label: '演示' },
-	{ href: '#reuse', label: '复用' },
-	{ href: '#roadmap', label: '下一步' },
+	{ href: '#results', label: '结果' },
 ];
 ---
 
@@ -287,7 +168,7 @@ const nav = [
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<meta name="theme-color" content="#faf8f2" />
-		<meta property="og:title" content="RegisterKB · 团队共享大脑" />
+		<meta property="og:title" content="RegisterKB · 团队 AI 工作助手" />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="article" />
 		<meta property="og:url" content={pageUrl} />
@@ -303,7 +184,7 @@ const nav = [
 				<div class="crumbs">
 					<a class="back-link" href={worksHref}>← 作品集</a>
 					<a class="brand hide-sm" href={withBase('/')}>happy <b>OS</b></a>
-					<span class="hide-sm">/ dim_02 /</span>
+					<span class="hide-sm">/ dim_01 /</span>
 					<span>RegisterKB</span>
 				</div>
 				<nav class="case-nav" aria-label="页面目录">
@@ -315,15 +196,14 @@ const nav = [
 		<main class="case-wrap">
 			<section class="case-hero">
 				<div>
-					<p class="eyebrow">dim_02 · 代表作 · 工具与 Skill</p>
+					<p class="eyebrow">dim_01 · 代表作</p>
 					<h1>
 						RegisterKB
-						<small><span class="mark">团队共享大脑</span></small>
+						<small><span class="mark">团队 AI 工作助手</span></small>
 					</h1>
 					<p class="lead">
-						通信核心网测试环境的安装和排障，经验散在几千篇内部文档里。RegisterKB
-						把这些文档建成本地索引：回答问题时先给证据、让人挑来源，再生成 runbook、在白名单里执行。跑成功的经验写回成
-						skill，下次直接复用。
+						测试环境搭建、工具安装、特性验证的文档有几千篇，照着做费时又容易错。我带团队把它做成一个助手：先找证据，再让人审批执行，跑成功的经验沉淀成
+						Skill，下一个人直接复用。
 					</p>
 					<dl class="meta">
 						{
@@ -352,7 +232,7 @@ const nav = [
 				</figure>
 			</section>
 
-			<section class="metrics" aria-label="规模">
+			<section class="metrics" aria-label="关键数字">
 				{
 					metrics.map((item) => (
 						<div class:list={['metric', `tone-${item.tone}`]}>
@@ -365,29 +245,13 @@ const nav = [
 					))
 				}
 			</section>
-			<p class="metrics-note">数字来自一次去重重建后的本地索引统计。</p>
 
 			<section class="case-section" id="problem">
 				<div class="sec-head">
 					<p class="eyebrow">01 · Problem</p>
 					<h2>“testclient 怎么装？” 答案通常是一个链接</h2>
-					<p>
-						团队里最常听到的问题，回答往往是“看这个链接，按步骤来”。可真正动手的人要自己点开一串页面、读懂、改命令、上集群敲，一次下来半天就没了。
-					</p>
 				</div>
-				<div class="comic-pair">
-					<figure class="frame">
-						<button class="zoom" type="button" data-zoom={img('before-question')} data-alt="testclient 怎么装">
-							<img
-								src={img('before-question')}
-								width="1200"
-								height="800"
-								loading="lazy"
-								alt="漫画：一位工程师问“testclient 怎么装？”，同事指着屏幕说“看这个链接，按步骤来就能装起来”"
-							/>
-						</button>
-						<figcaption>最常见的问答：一个问题，一个链接。</figcaption>
-					</figure>
+				<div class="problem">
 					<figure class="frame">
 						<button class="zoom" type="button" data-zoom={img('before-manual')} data-alt="以前的手动流程">
 							<img
@@ -398,24 +262,24 @@ const nav = [
 								alt="四格漫画：手动点开链接、一步步学习理解、自己适配命令、在集群上手敲命令"
 							/>
 						</button>
-						<figcaption>以前的流程：点链接 → 读文档 → 改命令 → 上集群手敲。</figcaption>
+						<figcaption>以前：点链接 → 读文档 → 改命令 → 上集群手敲。</figcaption>
 					</figure>
-				</div>
-				<div class="pain-grid">
-					{
-						pains.map((pain) => (
-							<div class:list={['pain', `tone-${pain.tone}`]}>
-								<b>{pain.title}</b>
-								<p>{pain.body}</p>
-							</div>
-						))
-					}
+					<div class="pain-stack">
+						{
+							pains.map((pain) => (
+								<div class:list={['pain', `tone-${pain.tone}`]}>
+									<b>{pain.title}</b>
+									<p>{pain.body}</p>
+								</div>
+							))
+						}
+					</div>
 				</div>
 			</section>
 
 			<section class="case-section" id="flow">
 				<div class="sec-head">
-					<p class="eyebrow">02 · End-to-end flow</p>
+					<p class="eyebrow">02 · Flow</p>
 					<h2>五步闭环：先选证据，再执行；成功后先挂起</h2>
 					<p>点击每一步，看它做什么、守什么规矩。</p>
 				</div>
@@ -479,9 +343,8 @@ const nav = [
 
 			<section class="case-section" id="architecture">
 				<div class="sec-head">
-					<p class="eyebrow">03 · Architecture</p>
-					<h2>本地 Web API + SQLite 状态机</h2>
-					<p>没有上云，也不依赖额外服务。一个 Python 进程、一个 SQLite 文件，把检索、学习、执行和写回串起来。</p>
+					<p class="eyebrow">03 · Architecture &amp; safety</p>
+					<h2>五层架构，外加一条底线：不让 AI 裸奔</h2>
 				</div>
 				<div class="arch">
 					<ol class="layers">
@@ -497,91 +360,47 @@ const nav = [
 							))
 						}
 					</ol>
-					<div class="stack-grid">
-						{
-							stackGroups.map((group) => (
-								<div class:list={['stack', `tone-${group.tone}`]}>
-									<h3>{group.title}</h3>
-									<ul>
-										{group.items.map((item) => (
-											<li>{item}</li>
-										))}
-									</ul>
-								</div>
-							))
-						}
+					<div class="safety tone-yellow">
+						<h3>
+							安全设计
+							<span>GUARDRAILS</span>
+						</h3>
+						<ul>
+							{safety.map((item) => <li>{item}</li>)}
+						</ul>
+						<p class="boundary">
+							<b>边界：</b>普通的 Cursor 对话成功了，不会写成 Skill。只有 RegisterKB 流程里跑成功的任务，才进入 pending。
+						</p>
 					</div>
 				</div>
-			</section>
-
-			<section class="case-section" id="safety">
-				<div class="sec-head">
-					<p class="eyebrow">04 · Execution &amp; safety</p>
-					<h2>不让 AI 裸奔</h2>
-					<p>能在集群上执行命令的工具，最要紧的是知道什么时候不该动。</p>
-				</div>
-				<div class="safety-grid">
-					{
-						safety.map((block) => (
-							<div class:list={['safety', `tone-${block.tone}`]}>
-								<h3>
-									{block.title}
-									<span>{block.tag}</span>
-								</h3>
-								<ul>
-									{block.items.map((item) => (
-										<li>{item}</li>
-									))}
-								</ul>
-							</div>
-						))
-					}
-				</div>
-				<p class="boundary">
-					<b>边界：</b>普通的 Cursor 对话成功了，不会被写成 skill。只有在 RegisterKB 流程里跑成功的任务，才进入 pending。
-				</p>
 			</section>
 
 			<section class="case-section" id="demo">
 				<div class="sec-head">
-					<p class="eyebrow">05 · Demo</p>
+					<p class="eyebrow">04 · Demo</p>
 					<h2>一次完整的 testclient 安装</h2>
-					<p>下面是一段模拟对话，演示从提问到写回的全过程。</p>
 				</div>
-				<div class="demo">
-					<div class="term" data-term>
-						<div class="term-bar">
-							<i></i><i></i><i></i>
-							<span>registerkb — demo</span>
-							<button type="button" data-term-play>▶ 播放</button>
-						</div>
-						<div class="term-body" data-term-body>
-							{
-								termLines.map((line) => (
-									<span class:list={['t-line', `t-${line.kind}`]} data-kind={line.kind}>{line.text}</span>
-								))
-							}
-						</div>
-						<p class="term-note">演示数据，非真实环境。</p>
+				<div class="term" data-term>
+					<div class="term-bar">
+						<i></i><i></i><i></i>
+						<span>registerkb — demo</span>
+						<button type="button" data-term-play>▶ 播放</button>
 					</div>
-					<ol class="demo-steps tone-blue">
+					<div class="term-body" data-term-body>
 						{
-							demoSteps.map((step) => (
-								<li>
-									<b>{step.title}</b>
-									<span>{step.note}</span>
-								</li>
+							termLines.map((line) => (
+								<span class:list={['t-line', `t-${line.kind}`]} data-kind={line.kind}>{line.text}</span>
 							))
 						}
-					</ol>
+					</div>
+					<p class="term-note">演示数据，非真实环境。</p>
 				</div>
 			</section>
 
-			<section class="case-section" id="reuse">
+			<section class="case-section" id="results">
 				<div class="sec-head">
-					<p class="eyebrow">06 · Next time</p>
-					<h2>下一次，直接复用</h2>
-					<p>同样的问题再来，RegisterKB 会同时找到原文页面和上次验证过的 skill。</p>
+					<p class="eyebrow">05 · Results</p>
+					<h2>结果：下一次，直接复用</h2>
 				</div>
 				<div class="reuse">
 					<figure class="frame">
@@ -594,67 +413,25 @@ const nav = [
 								alt="四格漫画：提问 RegisterKB，找到原页面和上次验证过的 skill，自动生成验证过的 runbook，按步骤安装后所有 Pod Running"
 							/>
 						</button>
-						<figcaption>知识复用，让每一次安装都更快、更稳。</figcaption>
+						<figcaption>同样的问题再来，原文页面和上次验证过的 Skill 一起找到。</figcaption>
 					</figure>
-					<ol>
-						<li><b>问 RegisterKB：</b>还是那句“testclient 怎么装？”</li>
-						<li><b>找到两样东西：</b>当时的原文页面，加上一次成功安装沉淀下来的 skill。</li>
-						<li><b>生成 runbook：</b>步骤已经被上一次的真实执行验证过。</li>
-						<li><b>按步骤装：</b>Pod 全部 Running 之后，这次的经验再沉淀成新的 skill。</li>
-					</ol>
+					<div>
+						<ul class="results">
+							{results.map((item) => <li>{item}</li>)}
+						</ul>
+						<p class="next-label">下一步</p>
+						<ul class="chips">
+							{roadmap.map((item) => <li>{item}</li>)}
+						</ul>
+					</div>
 				</div>
 			</section>
-
-			<section class="case-section" id="engineering">
-				<div class="sec-head">
-					<p class="eyebrow">07 · Engineering</p>
-					<h2>几个工程细节</h2>
-				</div>
-				<div class="eng-grid">
-					{
-						engineering.map((item) => (
-							<div class:list={['eng', `tone-${item.tone}`, { lesson: item.lesson }]}>
-								<h3>
-									<span>{item.tag}</span>
-									{item.title}
-								</h3>
-								<p>{item.body}</p>
-							</div>
-						))
-					}
-				</div>
-			</section>
-
-			<section class="case-section" id="roadmap">
-				<div class="sec-head">
-					<p class="eyebrow">08 · Roadmap</p>
-					<h2>下一步：治理和规模化</h2>
-				</div>
-				<div class="road-grid">
-					{
-						roadmap.map((item, index) => (
-							<div class:list={['road', `tone-${item.tone}`]}>
-								<span>0{index + 1}</span>
-								<b>{item.title}</b>
-								<p>{item.body}</p>
-							</div>
-						))
-					}
-				</div>
-			</section>
-
-			<blockquote class="closing">
-				<p>
-					它已经不是概念验证，而是跑通了<span class="mark">“查证据 → 受控执行 → 成功经验沉淀”</span>的最小闭环；下一步做治理和规模化。
-				</p>
-				<footer>— 我在团队技术分享里的总结</footer>
-			</blockquote>
 		</main>
 
 		<footer class="case-foot">
 			<div class="case-wrap">
 				<p>
-					RegisterKB 是我在工作中做的内部工具。源码、内部文档、链接和环境信息都不公开，这里只展示思路、流程和架构。插图来自我的技术分享 PPT，已去掉公司标识。
+					RegisterKB 是我带团队在工作中做的内部工具。源码、内部文档、链接和环境信息都不公开，这里只展示思路、流程和结果。插图来自我的技术分享 PPT，已去掉公司标识。
 				</p>
 				<div class="foot-links">
 					<a href={worksHref}>← 回到作品集</a>

@@ -41,7 +41,7 @@ const portrait = withBase('/images/happy-character.webp');
 			<div class="photo-card">
 				<span class="photo-tag">HAPPY / CHARACTER</span>
 				<img src={portrait} alt="Happy 的蓝黄手绘形象" />
-				<span class="photo-caption">AI learner &amp; builder</span>
+				<span class="photo-caption">核心网工程师 · AI 应用落地</span>
 			</div>
 		)
 	}
@@ -118,63 +118,39 @@ const portrait = withBase('/images/happy-character.webp');
 	}
 
 	{
-		card.kind === 'tags' && (
+		card.kind === 'stats' && (
 			<>
 				<p class="eyebrow">{card.eyebrow}</p>
-				<h2 class="card-title">{card.heading}</h2>
-				<ul class="chips wide">
-					{card.tags?.map((tag) => <li>{tag}</li>)}
+				<ul class="stat-list">
+					{card.stats?.map((stat) => (
+						<li>
+							<strong>
+								{stat.value}
+								{stat.unit && <small>{stat.unit}</small>}
+							</strong>
+							<span>{stat.label}</span>
+						</li>
+					))}
 				</ul>
 			</>
 		)
 	}
 
 	{
-		card.kind === 'work' && (
-			<div class="work-card">
-				<p class="eyebrow">WORK WITH ME</p>
-				<h2 class="card-title">1 person + AI = 1 team</h2>
-				<div class="work-rows">
-					<div>
-						<span aria-hidden="true">✍️</span>
-						<b>学习笔记与拆解</b>
-						<small>把复杂概念讲清楚，欢迎交流和纠错</small>
-					</div>
-					<div>
-						<span aria-hidden="true">🛠️</span>
-						<b>Agent 工作流</b>
-						<small>把重复的活交给 Agent，人只做判断</small>
-					</div>
-				</div>
-				<div class="work-contact">
-					<a href="https://github.com/happym51888/happyAI-zhl" rel="noreferrer">💻 GitHub</a>
-					<span>📮 邮箱待补充</span>
-				</div>
-			</div>
-		)
-	}
-
-	{
-		card.kind === 'evolution' && (
-			<div class="evolution-card">
-				<p class="eyebrow">网页进化史</p>
-				<ol class="evolution-list">
-					<li>
-						<b>Ver 1</b>
-						<span>文档站 · Starlight 知识库</span>
-					</li>
-					<li>
-						<b>Ver 2</b>
-						<span>个人主页 · 终端风格长页</span>
-					</li>
-					<li>
-						<b>Ver 3</b>
-						<span>当前版本 · 终端 × 无限画布</span>
-						<button type="button" data-open-easter>打开</button>
-					</li>
-				</ol>
-				<a class="card-link" href={withBase('/notes/')}>Playground <b aria-hidden="true">↗</b></a>
-			</div>
+		card.kind === 'rows' && (
+			<>
+				<p class="eyebrow">{card.eyebrow}</p>
+				<h2 class="card-title">{card.heading}</h2>
+				<ul class="row-list">
+					{card.rows?.map((row) => (
+						<li>
+							<span>{row.tag}</span>
+							<b>{row.title}</b>
+							<small>{row.note}</small>
+						</li>
+					))}
+				</ul>
+			</>
 		)
 	}
 
@@ -186,15 +162,20 @@ const portrait = withBase('/images/happy-character.webp');
 					<span>happy@universe ~ zsh</span>
 				</div>
 				<div class="mini-terminal-body">
-					<p><b>$</b> echo &quot;see you&quot;</p>
-					<p class="out">See you next time.</p>
 					<p><b>$</b> cat contact.md</p>
-					<p class="out">💻 GitHub @happym51888</p>
-					<p class="out">📮 邮箱待补充</p>
-					<p><b>$</b> fortune</p>
-					<p class="out quote">“把学到的东西连接起来，才真正成为自己的知识。”</p>
+					<p class="out">
+						📮 <a href="mailto:happym51888@gmail.com">happym51888@gmail.com</a>
+					</p>
+					<p class="out">
+						💻 <a href="https://github.com/happym51888" rel="noreferrer">github.com/happym51888</a>
+					</p>
+					<p class="out">📰 公众号「HappyAI报」</p>
+					<p><b>$</b> open ver3</p>
+					<p class="out">
+						<button type="button" data-open-easter>打开 Ver 3 ↗</button>
+					</p>
 					<p><b>$</b> exit</p>
-					<p class="dim">[Process completed]</p>
+					<p class="dim">See you next time.</p>
 				</div>
 			</div>
 		)
@@ -221,6 +202,7 @@ const portrait = withBase('/images/happy-character.webp');
 					</div>
 					<h2 class="card-title">{card.heading}</h2>
 					<p class="card-body">{card.body}</p>
+					{card.role && <p class="project-role">{card.role}</p>}
 					{card.tags && (
 						<ul class="chips project-tags">
 							{card.tags.map((tag) => <li>{tag}</li>)}
